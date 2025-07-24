@@ -1,0 +1,49 @@
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    # 1. Charger tous les services automatiquement
+    App\:
+        resource: '../src/'
+
+    # 2. Définir explicitement les services personnalisés
+    App\Service\SecurityService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $requestStack: '@request_stack'
+
+    App\Service\PaymentService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $security: '@security.helper'
+            $receiptService: '@App\Service\ReceiptService'
+
+    App\Service\ReceiptService:
+        arguments:
+            $twig: '@twig'
+            $security: '@security.helper'
+            $receiptsDirectory: '%kernel.project_dir%/var/receipts'
+
+    App\Service\StudentService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $security: '@security.helper'
+
+    App\Service\StatisticsService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    # Event Listeners
+    App\EventListener\LoginSuccessListener:
+        tags:
+            - { name: kernel.event_listener, event: Symfony\Component\Security\Http\Event\LoginSuccessEvent }
+
+    App\EventListener\EntityAuditListener:
+        tags:
+            - { name: doctrine.event_subscriber }
+
+    # Security
+    App\Security\AccessDeniedHandler: ~

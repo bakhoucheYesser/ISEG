@@ -1,0 +1,201 @@
+{# templates/components/_footer.html.twig #}
+<footer class="bg-white border-t border-gray-200 mt-auto">
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- Logo et description -->
+            <div class="md:col-span-2">
+                <div class="flex items-center mb-4">
+                    <div class="bg-iseg-gold-500 p-2 rounded-lg mr-3">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-iseg-navy-900">ISEG Tunis</h3>
+                        <p class="text-sm text-gray-600">Institut des Sciences Économiques et de Gestion</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm leading-relaxed max-w-md">
+                    Système de gestion des étudiants et des paiements développé pour faciliter
+                    l'administration académique et financière de l'institut.
+                </p>
+                <div class="mt-4 flex items-center space-x-4">
+                    <div class="text-xs text-gray-500">
+                        <span class="font-medium">Session:</span> {{ app.user.fullName }}
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        <span class="font-medium">IP:</span> {{ app.request.clientIp }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liens rapides -->
+            <div>
+                <h4 class="text-sm font-semibold text-iseg-navy-900 uppercase tracking-wider mb-4">
+                    Liens Rapides
+                </h4>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="{{ path('student_index') }}" class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
+                            Liste des étudiants
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('student_new') }}" class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
+                            Nouvel étudiant
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('payment_index') }}" class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
+                            Gestion paiements
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('statistics') }}" class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
+                            Statistiques
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Support & Contact -->
+            <div>
+                <h4 class="text-sm font-semibold text-iseg-navy-900 uppercase tracking-wider mb-4">
+                    Support
+                </h4>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" onclick="ISEGUtils.showToast('Fonctionnalité bientôt disponible', 'info')"
+                           class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
+                            Guide d'utilisation
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="ISEGUtils.showToast('Contactez l\'administrateur système', 'info')"
+                           class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
+                            Support technique
+                        </a>
+                    </li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li>
+                            <a href="#" class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
+                                Logs système
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
+                                Sauvegarde
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Statistiques en temps réel -->
+        <div class="mt-8 pt-6 border-t border-gray-200">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-iseg-navy-900" id="total-students">
+                        {{ random(150, 300) }} {# À remplacer par la vraie donnée #}
+                    </div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide">Étudiants actifs</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-iseg-gold-600" id="pending-payments">
+                        {{ random(5, 25) }} {# À remplacer par la vraie donnée #}
+                    </div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide">Paiements en attente</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-green-600" id="monthly-revenue">
+                        {{ random(15000, 35000)|number_format(0, ',', ' ') }} DT
+                    </div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide">Revenus ce mois</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-iseg-blue-600" id="payment-rate">
+                        {{ random(75, 95) }}%
+                    </div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide">Taux de paiement</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="mt-8 pt-6 border-t border-gray-200">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-sm text-gray-500">
+                    © {{ "now"|date("Y") }} ISEG Tunis. Tous droits réservés.
+                </div>
+
+                <div class="flex items-center space-x-6 mt-4 md:mt-0">
+                    <!-- Version système -->
+                    <div class="text-xs text-gray-400">
+                        Version 1.0.0
+                    </div>
+
+                    <!-- Statut système -->
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span class="text-xs text-gray-500">Système opérationnel</span>
+                    </div>
+
+                    <!-- Dernière sauvegarde -->
+                    <div class="text-xs text-gray-400">
+                        Dernière sauvegarde: {{ "now"|date("d/m/Y H:i") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Debug info (seulement en développement) -->
+        {% if app.environment == 'dev' %}
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <details class="text-xs text-gray-400">
+                    <summary class="cursor-pointer hover:text-gray-600">Informations de débogage</summary>
+                    <div class="mt-2 bg-gray-50 p-3 rounded font-mono">
+                        <div>Route: {{ app.request.get('_route') }}</div>
+                        <div>Controller: {{ app.request.get('_controller') }}</div>
+                        <div>Method: {{ app.request.method }}</div>
+                        <div>User Agent: {{ app.request.headers.get('User-Agent')|slice(0, 50) }}...</div>
+{#                        <div>Memory: {{ (memory_get_usage(true) / 1024 / 1024)|round(2) }} MB</div>#}
+                    </div>
+                </details>
+            </div>
+        {% endif %}
+    </div>
+</footer>
+
+<!-- Scripts pour le footer -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mise à jour périodique des statistiques (toutes les 30 secondes)
+        function updateFooterStats() {
+            // Ici vous pouvez faire un appel AJAX pour récupérer les vraies statistiques
+            // ISEGUtils.apiCall('/api/stats/footer').then(data => {
+            //     document.getElementById('total-students').textContent = data.totalStudents;
+            //     document.getElementById('pending-payments').textContent = data.pendingPayments;
+            //     // etc...
+            // });
+        }
+
+        // Première mise à jour immédiate
+        updateFooterStats();
+
+        // Puis toutes les 30 secondes
+        setInterval(updateFooterStats, 30000);
+
+        // Animation au survol des statistiques
+        document.querySelectorAll('[id$="-students"], [id$="-payments"], [id$="-revenue"], [id$="-rate"]').forEach(stat => {
+            stat.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+                this.style.transition = 'transform 0.2s ease-in-out';
+            });
+
+            stat.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    });
+</script>
