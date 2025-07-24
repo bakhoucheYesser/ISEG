@@ -1,0 +1,296 @@
+{# templates/student/search.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Rechercher un étudiant{% endblock %}
+
+{% block content %}
+    <div class="space-y-8">
+        <!-- Header -->
+        <div>
+            <nav class="flex" aria-label="Breadcrumb">
+                <ol class="flex items-center space-x-4">
+                    <li>
+                        <a href="{{ path('dashboard') }}" class="text-gray-400 hover:text-gray-500">
+                            <svg class="flex-shrink-0 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <a href="{{ path('student_index') }}" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">Étudiants</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="ml-4 text-sm font-medium text-gray-500">Recherche</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+            <div class="mt-4">
+                <h1 class="text-3xl font-bold text-iseg-navy-900">Rechercher un étudiant</h1>
+                <p class="text-gray-600 mt-1">Trouvez rapidement un étudiant par son nom, prénom ou numéro CIN</p>
+            </div>
+        </div>
+
+        <!-- Barre de recherche -->
+        <div class="card">
+            <div class="card-body">
+                <form method="GET" class="flex space-x-4">
+                    <div class="flex-1">
+                        <label for="search-input" class="sr-only">Rechercher un étudiant</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                            <input type="text"
+                                   name="q"
+                                   id="search-input"
+                                   value="{{ query }}"
+                                   class="form-input pl-10"
+                                   placeholder="Nom, prénom, CIN..."
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        Rechercher
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Conseils de recherche -->
+        {% if not query %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center py-8">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-iseg-gold-100">
+                            <svg class="h-6 w-6 text-iseg-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="text-lg font-medium text-gray-900">Recherche d'étudiants</h3>
+                            <p class="mt-2 text-sm text-gray-500">
+                                Utilisez la barre de recherche ci-dessus pour trouver un étudiant
+                            </p>
+                        </div>
+
+                        <div class="mt-6">
+                            <h4 class="text-sm font-medium text-gray-900 mb-3">Conseils de recherche :</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <div class="font-medium text-gray-900 mb-1">Par nom</div>
+                                    <div>Tapez le nom ou prénom de l'étudiant</div>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <div class="font-medium text-gray-900 mb-1">Par CIN</div>
+                                    <div>Saisissez tout ou partie du numéro CIN</div>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <div class="font-medium text-gray-900 mb-1">Recherche partielle</div>
+                                    <div>Minimum 2 caractères requis</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Résultats de recherche -->
+        {% if query %}
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-lg font-semibold text-iseg-navy-900">
+                        Résultats pour "{{ query }}"
+                        {% if students|length > 0 %}
+                            <span class="text-sm font-normal text-gray-600">({{ students|length }} résultat(s))</span>
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {% if students|length > 0 %}
+                        <div class="space-y-4">
+                            {% for student in students %}
+                                {% if student.formation is defined %}
+                                    {# C'est un Enrollment avec une formation #}
+                                    {% set studentEntity = student.student %}
+                                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="flex-shrink-0">
+                                                    <div class="h-12 w-12 rounded-full bg-iseg-gold-100 flex items-center justify-center">
+                                                        <span class="text-sm font-medium text-iseg-gold-800">
+                                                            {{ studentEntity.firstName|first }}{{ studentEntity.lastName|first }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h3 class="text-lg font-medium text-gray-900">{{ studentEntity.fullName }}</h3>
+                                                    <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                                        <span>CIN: {{ studentEntity.cin }}</span>
+                                                        {% if studentEntity.email %}
+                                                            <span>{{ studentEntity.email }}</span>
+                                                        {% endif %}
+                                                        {% if studentEntity.phone %}
+                                                            <span>{{ studentEntity.phone }}</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="mt-1 flex items-center space-x-4 text-xs text-gray-500">
+                                                        <span>Formation: {{ student.formation.name }}</span>
+                                                        <span>{{ student.formation.academicLevel.name }}</span>
+                                                        {% if student.paymentStatus %}
+                                                            <span class="badge badge-{{ student.paymentStatus.value == 'FULLY_PAID' ? 'success' : (student.paymentStatus.value == 'PARTIAL' ? 'warning' : 'danger') }}">
+                                                                {{ student.paymentStatus.value == 'FULLY_PAID' ? 'Payé' : (student.paymentStatus.value == 'PARTIAL' ? 'Partiel' : 'Non payé') }}
+                                                            </span>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <a href="{{ path('student_show', {id: studentEntity.id}) }}"
+                                                   class="btn btn-outline btn-sm">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                    </svg>
+                                                    Voir
+                                                </a>
+                                                {% if student.paymentStatus and student.paymentStatus.value != 'FULLY_PAID' %}
+                                                    <a href="{{ path('payment_new', {id: student.id}) }}"
+                                                       class="btn btn-primary btn-sm">
+                                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                                        </svg>
+                                                        Paiement
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    {# C'est un Student direct #}
+                                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="flex-shrink-0">
+                                                    <div class="h-12 w-12 rounded-full bg-iseg-gold-100 flex items-center justify-center">
+                                                        <span class="text-sm font-medium text-iseg-gold-800">
+                                                            {{ student.firstName|first }}{{ student.lastName|first }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h3 class="text-lg font-medium text-gray-900">{{ student.fullName }}</h3>
+                                                    <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                                        <span>CIN: {{ student.cin }}</span>
+                                                        {% if student.email %}
+                                                            <span>{{ student.email }}</span>
+                                                        {% endif %}
+                                                        {% if student.phone %}
+                                                            <span>{{ student.phone }}</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="mt-1 text-xs text-gray-500">
+                                                        <span>Créé le {{ student.createdAt|date('d/m/Y') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <a href="{{ path('student_show', {id: student.id}) }}"
+                                                   class="btn btn-outline btn-sm">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                    </svg>
+                                                    Voir
+                                                </a>
+                                                <a href="{{ path('student_enroll', {id: student.id}) }}"
+                                                   class="btn btn-secondary btn-sm">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                    </svg>
+                                                    Inscrire
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <!-- Aucun résultat -->
+                        <div class="text-center py-12">
+                            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-gray-100">
+                                <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="mt-4">
+                                <h3 class="text-lg font-medium text-gray-900">Aucun étudiant trouvé</h3>
+                                <p class="mt-2 text-sm text-gray-500">
+                                    Aucun étudiant ne correspond à votre recherche "{{ query }}".
+                                </p>
+                            </div>
+
+                            <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+                                <a href="{{ path('student_search') }}" class="btn btn-outline">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                    Nouvelle recherche
+                                </a>
+                                <a href="{{ path('student_new') }}" class="btn btn-primary">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    Créer un nouvel étudiant
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Actions rapides -->
+        <div class="flex justify-between items-center">
+            <a href="{{ path('student_index') }}" class="btn btn-outline">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Retour à la liste
+            </a>
+
+            <a href="{{ path('student_new') }}" class="btn btn-primary">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Nouvel étudiant
+            </a>
+        </div>
+    </div>
+
+    <!-- Auto-focus sur le champ de recherche -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+            if (searchInput && !searchInput.value) {
+                searchInput.focus();
+            }
+        });
+    </script>
+{% endblock %}

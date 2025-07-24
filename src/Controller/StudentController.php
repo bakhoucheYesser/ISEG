@@ -57,6 +57,10 @@ class StudentController extends AbstractController
                 ->setParameter('paymentStatus', $paymentStatus);
         }
 
+        // Clone the query builder for count query BEFORE adding ORDER BY
+        $countQb = clone $qb;
+
+        // Add ORDER BY only to the main query
         $qb->orderBy('s.lastName', 'ASC')
             ->addOrderBy('s.firstName', 'ASC');
 
@@ -69,9 +73,8 @@ class StudentController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        $total = $qb->select('COUNT(e.id)')
-            ->setFirstResult(0)
-            ->setMaxResults(null)
+        // Use the cloned query builder for count (without ORDER BY)
+        $total = $countQb->select('COUNT(e.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -199,14 +202,27 @@ class StudentController extends AbstractController
 
         if ($request->isXmlHttpRequest()) {
             return $this->json([
-                'students' => array_map(function($enrollment) {
-                    return [
-                        'id' => $enrollment->getStudent()->getId(),
-                        'fullName' => $enrollment->getStudent()->getFullName(),
-                        'cin' => $enrollment->getStudent()->getCin(),
-                        'formation' => $enrollment->getFormation()->getName(),
-                        'paymentStatus' => $enrollment->getPaymentStatus(),
-                    ];
+                'students' => array_map(function($student) {
+                    // Handle both Student entities and Enrollment entities
+                    if ($student instanceof Enrollment) {
+                        $studentEntity = $student->getStudent();
+                        return [
+                            'id' => $studentEntity->getId(),
+                            'fullName' => $studentEntity->getFullName(),
+                            'cin' => $studentEntity->getCin(),
+                            'formation' => $student->getFormation()->getName(),
+                            'paymentStatus' => $student->getPaymentStatus()->value,
+                        ];
+                    } else {
+                        // Direct Student entity
+                        return [
+                            'id' => $student->getId(),
+                            'fullName' => $student->getFullName(),
+                            'cin' => $student->getCin(),
+                            'formation' => null,
+                            'paymentStatus' => null,
+                        ];
+                    }
                 }, $students)
             ]);
         }

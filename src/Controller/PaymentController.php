@@ -38,9 +38,9 @@ class PaymentController extends AbstractController
 
         // Filtres
         if ($status === 'validated') {
-            $qb->andWhere('p.isValidated = true');
+            $qb->andWhere('p.isActive = true');
         } elseif ($status === 'pending') {
-            $qb->andWhere('p.isValidated = false');
+            $qb->andWhere('p.isActive = false');
         }
 
         if ($dateRange) {
@@ -60,6 +60,10 @@ class PaymentController extends AbstractController
             }
         }
 
+        // Clone the query builder for count query BEFORE adding ORDER BY
+        $countQb = clone $qb;
+
+        // Add ORDER BY only to the main query
         $qb->orderBy('p.createdAt', 'DESC');
 
         // Pagination
@@ -71,9 +75,8 @@ class PaymentController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        $total = $qb->select('COUNT(p.id)')
-            ->setFirstResult(0)
-            ->setMaxResults(null)
+        // Use the cloned query builder for count (without ORDER BY)
+        $total = $countQb->select('COUNT(p.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -170,5 +173,31 @@ class PaymentController extends AbstractController
             'receipt' => $receipt,
             'payment' => $payment,
         ]);
+    }
+
+    #[Route('/{id}/delete', name: 'payment_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function delete(Request $request, Payment $payment): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$payment->getId(), $request->request->get('_token'))) {
+            try {
+                // Check if payment can be deleted
+                if (!$payment->canBeDeleted()) {
+                    $this->addFlash('error', 'Ce paiement ne peut pas être supprimé.');
+                    return $this->redirectToRoute('payment_show', ['id' => $payment->getId()]);
+                }
+
+                $this->entityManager->remove($payment);
+                $this->entityManager->flush();
+
+                $this->addFlash('success', 'Paiement supprimé avec succès !');
+                return $this->redirectToRoute('payment_index');
+
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur lors de la suppression : ' . $e->getMessage());
+            }
+        }
+
+        return $this->redirectToRoute('payment_show', ['id' => $payment->getId()]);
     }
 }

@@ -1,7 +1,7 @@
 {# templates/student/new.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouveau étudiant{% endblock %}
+{% block title %}Nouvel étudiant{% endblock %}
 
 {% block content %}
     <div class="space-y-8">
@@ -29,149 +29,220 @@
                             <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                             </svg>
-                            <span class="ml-4 text-sm font-medium text-gray-500">Nouveau</span>
+                            <span class="ml-4 text-sm font-medium text-gray-500">Nouvel étudiant</span>
                         </div>
                     </li>
                 </ol>
             </nav>
-
             <div class="mt-4">
-                <h1 class="text-3xl font-bold text-iseg-navy-900">Nouvel étudiant</h1>
-                <p class="text-gray-600 mt-1">Ajouter un nouvel étudiant au système ISEG</p>
+                <h1 class="text-3xl font-bold text-iseg-navy-900">Ajouter un nouvel étudiant</h1>
+                <p class="text-gray-600 mt-1">Créez le profil d'un nouvel étudiant avant de l'inscrire à une formation</p>
             </div>
         </div>
 
         <!-- Formulaire -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="text-lg font-semibold text-iseg-navy-900">Informations personnelles</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-lg font-semibold text-iseg-navy-900">Informations personnelles</h2>
+                        <p class="text-sm text-gray-600">Les champs marqués d'un * sont obligatoires</p>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+
+                        <!-- Informations de base -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                {{ form_label(form.cin, null, {'label_attr': {'class': 'form-label'}}) }} *
+                                {{ form_widget(form.cin, {'attr': {'class': 'form-input'}}) }}
+                                {{ form_errors(form.cin) }}
+                                <p class="form-help">Numéro de carte d'identité nationale (8 chiffres)</p>
+                            </div>
+
+                            <div>
+                                {{ form_label(form.nationality, null, {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.nationality, {'attr': {'class': 'form-input'}}) }}
+                                {{ form_errors(form.nationality) }}
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                {{ form_label(form.firstName, null, {'label_attr': {'class': 'form-label'}}) }} *
+                                {{ form_widget(form.firstName, {'attr': {'class': 'form-input'}}) }}
+                                {{ form_errors(form.firstName) }}
+                            </div>
+
+                            <div>
+                                {{ form_label(form.lastName, null, {'label_attr': {'class': 'form-label'}}) }} *
+                                {{ form_widget(form.lastName, {'attr': {'class': 'form-input'}}) }}
+                                {{ form_errors(form.lastName) }}
+                            </div>
+                        </div>
+
+                        <!-- Informations de contact -->
+                        <div class="border-t pt-6">
+                            <h3 class="text-md font-medium text-gray-900 mb-4">Informations de contact</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    {{ form_label(form.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.email, {'attr': {'class': 'form-input'}}) }}
+                                    {{ form_errors(form.email) }}
+                                </div>
+
+                                <div>
+                                    {{ form_label(form.phone, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.phone, {'attr': {'class': 'form-input'}}) }}
+                                    {{ form_errors(form.phone) }}
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                {{ form_label(form.address, null, {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.address, {'attr': {'class': 'form-textarea', 'rows': 3}}) }}
+                                {{ form_errors(form.address) }}
+                            </div>
+                        </div>
+
+                        <!-- Informations personnelles -->
+                        <div class="border-t pt-6">
+                            <h3 class="text-md font-medium text-gray-900 mb-4">Informations personnelles</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    {{ form_label(form.dateOfBirth, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.dateOfBirth, {'attr': {'class': 'form-input'}}) }}
+                                    {{ form_errors(form.dateOfBirth) }}
+                                </div>
+
+                                <div>
+                                    {{ form_label(form.placeOfBirth, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.placeOfBirth, {'attr': {'class': 'form-input'}}) }}
+                                    {{ form_errors(form.placeOfBirth) }}
+                                </div>
+
+                                <div>
+                                    {{ form_label(form.gender, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.gender, {'attr': {'class': 'form-select'}}) }}
+                                    {{ form_errors(form.gender) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact d'urgence -->
+                        <div class="border-t pt-6">
+                            <h3 class="text-md font-medium text-gray-900 mb-4">Contact d'urgence</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    {{ form_label(form.emergencyContactName, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.emergencyContactName, {'attr': {'class': 'form-input'}}) }}
+                                    {{ form_errors(form.emergencyContactName) }}
+                                </div>
+
+                                <div>
+                                    {{ form_label(form.emergencyContactPhone, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.emergencyContactPhone, {'attr': {'class': 'form-input'}}) }}
+                                    {{ form_errors(form.emergencyContactPhone) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="border-t pt-6">
+                            <div>
+                                {{ form_label(form.notes, null, {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.notes, {'attr': {'class': 'form-textarea', 'rows': 4}}) }}
+                                {{ form_errors(form.notes) }}
+                                <p class="form-help">Notes administratives internes (optionnel)</p>
+                            </div>
+                        </div>
+
+                        <!-- Boutons d'action -->
+                        <div class="flex justify-between items-center pt-6 border-t">
+                            <a href="{{ path('student_index') }}" class="btn btn-outline">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
+                                Annuler
+                            </a>
+
+                            <button type="submit" class="btn btn-primary">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v6a2 2 0 002 2h2m0 0h1m4 0h1m0 0h2a2 2 0 002-2V9a2 2 0 00-2-2h-2M9 7a2 2 0 012-2h2a2 2 0 012 2M9 7h6"></path>
+                                </svg>
+                                Créer l'étudiant
+                            </button>
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
             </div>
 
-            <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
-
-                <!-- Informations principales -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        {{ form_label(form.cin, null, {'attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.cin) }}
-                        {{ form_errors(form.cin) }}
-                        <p class="form-help">Numéro CIN tunisien (8 chiffres)</p>
+            <!-- Sidebar avec aide -->
+            <div class="lg:col-span-1">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-lg font-semibold text-iseg-navy-900">Aide à la saisie</h3>
                     </div>
-
-                    <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            {{ form_label(form.firstName, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.firstName) }}
-                            {{ form_errors(form.firstName) }}
+                    <div class="card-body space-y-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h4 class="text-sm font-medium text-blue-800">Prochaine étape</h4>
+                                    <div class="mt-2 text-sm text-blue-700">
+                                        Après avoir créé l'étudiant, vous pourrez l'inscrire à une formation et définir son mode de paiement.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            {{ form_label(form.lastName, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.lastName) }}
-                            {{ form_errors(form.lastName) }}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Contact -->
-                <div class="border-t border-gray-200 pt-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Informations de contact</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            {{ form_label(form.email, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.email) }}
-                            {{ form_errors(form.email) }}
-                        </div>
-
-                        <div>
-                            {{ form_label(form.phone, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.phone) }}
-                            {{ form_errors(form.phone) }}
+                        <div class="space-y-3">
+                            <h4 class="text-sm font-medium text-gray-900">Conseils :</h4>
+                            <ul class="text-sm text-gray-600 space-y-2">
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">•</span>
+                                    Vérifiez que le numéro CIN est correct (8 chiffres)
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">•</span>
+                                    L'email sera utilisé pour les communications
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">•</span>
+                                    Le contact d'urgence est recommandé pour les mineurs
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">•</span>
+                                    Les notes sont privées et visibles uniquement par le personnel
+                                </li>
+                            </ul>
                         </div>
 
-                        <div class="md:col-span-2">
-                            {{ form_label(form.address, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.address) }}
-                            {{ form_errors(form.address) }}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Informations personnelles détaillées -->
-                <div class="border-t border-gray-200 pt-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Informations détaillées</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                            {{ form_label(form.dateOfBirth, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.dateOfBirth) }}
-                            {{ form_errors(form.dateOfBirth) }}
-                        </div>
-
-                        <div>
-                            {{ form_label(form.placeOfBirth, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.placeOfBirth) }}
-                            {{ form_errors(form.placeOfBirth) }}
-                        </div>
-
-                        <div>
-                            {{ form_label(form.gender, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.gender) }}
-                            {{ form_errors(form.gender) }}
-                        </div>
-
-                        <div class="md:col-span-3">
-                            {{ form_label(form.nationality, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.nationality) }}
-                            {{ form_errors(form.nationality) }}
+                        <div class="bg-yellow-50 p-4 rounded-lg">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h4 class="text-sm font-medium text-yellow-800">Important</h4>
+                                    <div class="mt-2 text-sm text-yellow-700">
+                                        Assurez-vous que toutes les informations sont correctes car elles seront utilisées pour les documents officiels.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Contact d'urgence -->
-                <div class="border-t border-gray-200 pt-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Contact d'urgence</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            {{ form_label(form.emergencyContactName, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.emergencyContactName) }}
-                            {{ form_errors(form.emergencyContactName) }}
-                        </div>
-
-                        <div>
-                            {{ form_label(form.emergencyContactPhone, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.emergencyContactPhone) }}
-                            {{ form_errors(form.emergencyContactPhone) }}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Notes -->
-                <div class="border-t border-gray-200 pt-6">
-                    <div>
-                        {{ form_label(form.notes, null, {'attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.notes) }}
-                        {{ form_errors(form.notes) }}
-                    </div>
-                </div>
-
-                {{ form_end(form) }}
-            </div>
-
-            <div class="card-footer">
-                <div class="flex justify-end space-x-3">
-                    <a href="{{ path('student_index') }}" class="btn btn-outline">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                        Annuler
-                    </a>
-                    <button type="submit" form="{{ form.vars.id }}" class="btn btn-primary">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Créer l'étudiant
-                    </button>
                 </div>
             </div>
         </div>

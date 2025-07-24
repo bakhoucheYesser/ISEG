@@ -1,0 +1,215 @@
+{# templates/payment/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des paiements{% endblock %}
+
+{% block content %}
+    <div class="space-y-8">
+        <!-- Header -->
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-iseg-navy-900">Paiements</h1>
+                <p class="text-gray-600 mt-1">{{ total }} paiements au total</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{{ path('payment_pending') }}" class="btn btn-warning">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    En attente validation
+                </a>
+                <a href="{{ path('receipt_index') }}" class="btn btn-outline">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Reçus
+                </a>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="card">
+            <div class="card-body">
+                <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="form-label">Statut</label>
+                        <select name="status" class="form-select">
+                            <option value="">Tous les statuts</option>
+                            <option value="validated" {{ status == 'validated' ? 'selected' : '' }}>Validés</option>
+                            <option value="pending" {{ status == 'pending' ? 'selected' : '' }}>En attente</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="form-label">Période</label>
+                        <select name="date_range" class="form-select">
+                            <option value="">Toutes les dates</option>
+                            <option value="today" {{ date_range == 'today' ? 'selected' : '' }}>Aujourd'hui</option>
+                            <option value="week" {{ date_range == 'week' ? 'selected' : '' }}>Cette semaine</option>
+                            <option value="month" {{ date_range == 'month' ? 'selected' : '' }}>Ce mois</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2 flex items-end">
+                        <button type="submit" class="btn btn-secondary w-full">
+                            Filtrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Liste des paiements -->
+        <div class="card">
+            <div class="overflow-x-auto">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Étudiant</th>
+                        <th>Formation</th>
+                        <th>Montant</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Statut</th>
+                        <th>Reçu</th>
+                        <th class="no-print">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for payment in payments %}
+                        <tr class="{{ not payment.isActive ? 'bg-yellow-50' : '' }}">
+                            <td>
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <div class="h-10 w-10 rounded-full bg-iseg-gold-100 flex items-center justify-center">
+                                            <span class="text-sm font-medium text-iseg-gold-800">
+                                                {{ payment.enrollment.student.firstName|first }}{{ payment.enrollment.student.lastName|first }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">
+                                            {{ payment.enrollment.student.fullName }}
+                                        </div>
+                                        <div class="text-sm text-gray-500">
+                                            CIN: {{ payment.enrollment.student.cin }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-sm text-gray-900">{{ payment.enrollment.formation.name }}</div>
+                                <div class="text-sm text-gray-500">{{ payment.enrollment.formation.academicLevel.name }}</div>
+                            </td>
+                            <td>
+                                <div class="text-lg font-semibold text-iseg-navy-900">
+                                    {{ payment.amount|number_format(2, ',', ' ') }} DT
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-info">
+                                    {{ payment.formattedPaymentType }}
+                                </span>
+                            </td>
+                            <td class="text-sm text-gray-900">
+                                {{ payment.paymentDate|date('d/m/Y') }}
+                            </td>
+                            <td>
+                                {% if payment.isActive %}
+                                    <span class="badge badge-success">Validé</span>
+                                {% else %}
+                                    <span class="badge badge-warning">En attente</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if payment.receipt %}
+                                    <a href="{{ path('payment_receipt', {id: payment.id}) }}"
+                                       class="text-iseg-blue-600 hover:text-iseg-blue-900">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                    </a>
+                                {% else %}
+                                    <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="no-print">
+                                <div class="flex items-center space-x-2">
+                                    <a href="{{ path('payment_show', {id: payment.id}) }}"
+                                       class="text-iseg-blue-600 hover:text-iseg-blue-900">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </a>
+
+                                    {% if not payment.isActive and is_granted('ROLE_ADMIN') %}
+                                        <form method="post" action="{{ path('payment_validate', {id: payment.id}) }}" class="inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('validate' ~ payment.id) }}">
+                                            <button type="submit"
+                                                    onclick="return confirm('Valider ce paiement ?')"
+                                                    class="text-green-600 hover:text-green-900">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center py-8 text-gray-500">
+                                Aucun paiement trouvé
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+            <div class="pagination">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    {% if current_page > 1 %}
+                        <a href="{{ path('payment_index', {page: current_page - 1, status: status, date_range: date_range}) }}"
+                           class="pagination-link rounded-l-md">Précédent</a>
+                    {% endif %}
+                    {% if current_page < total_pages %}
+                        <a href="{{ path('payment_index', {page: current_page + 1, status: status, date_range: date_range}) }}"
+                           class="pagination-link rounded-r-md">Suivant</a>
+                    {% endif %}
+                </div>
+
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Affichage de
+                            <span class="font-medium">{{ ((current_page - 1) * 20) + 1 }}</span>
+                            à
+                            <span class="font-medium">{{ min(current_page * 20, total) }}</span>
+                            sur
+                            <span class="font-medium">{{ total }}</span>
+                            résultats
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                            {% for page in 1..total_pages %}
+                                {% if page == current_page %}
+                                    <span class="pagination-link current border rounded-md">{{ page }}</span>
+                                {% else %}
+                                    <a href="{{ path('payment_index', {page: page, status: status, date_range: date_range}) }}"
+                                       class="pagination-link border rounded-md">{{ page }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

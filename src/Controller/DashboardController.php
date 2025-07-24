@@ -29,7 +29,6 @@ class DashboardController extends AbstractController
         $totalStudents = $this->entityManager->getRepository(Enrollment::class)
             ->count(['isActive' => true]);
 
-        // Utiliser is_active au lieu de isValidated
         $pendingPayments = $this->entityManager->getRepository(Payment::class)
             ->count(['isActive' => false]);
 

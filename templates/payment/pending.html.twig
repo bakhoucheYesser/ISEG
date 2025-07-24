@@ -1,0 +1,215 @@
+{# templates/payment/pending.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiements en attente{% endblock %}
+
+{% block content %}
+    <div class="space-y-8">
+        <!-- Header -->
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-iseg-navy-900">Paiements en attente</h1>
+                <p class="text-gray-600 mt-1">{{ payments|length }} paiements nécessitent une validation</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{{ path('payment_index') }}" class="btn btn-outline">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                    </svg>
+                    Tous les paiements
+                </a>
+            </div>
+        </div>
+
+        <!-- Liste des paiements en attente -->
+        <div class="card">
+            <div class="overflow-x-auto">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Étudiant</th>
+                        <th>Formation</th>
+                        <th>Montant</th>
+                        <th>Type</th>
+                        <th>Date de paiement</th>
+                        <th>Créé par</th>
+                        <th class="no-print">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for payment in payments %}
+                        <tr class="hover:bg-yellow-50">
+                            <td>
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <div class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                                            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">
+                                            {{ payment.enrollment.student.fullName }}
+                                        </div>
+                                        <div class="text-sm text-gray-500">
+                                            CIN: {{ payment.enrollment.student.cin }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-sm text-gray-900">{{ payment.enrollment.formation.name }}</div>
+                                <div class="text-sm text-gray-500">{{ payment.enrollment.formation.academicLevel.name }}</div>
+                            </td>
+                            <td>
+                                <div class="text-lg font-semibold text-iseg-gold-600">
+                                    {{ payment.amount|number_format(2, ',', ' ') }} DT
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-info">
+                                    {{ payment.formattedPaymentType }}
+                                </span>
+                            </td>
+                            <td class="text-sm text-gray-900">
+                                {{ payment.paymentDate|date('d/m/Y H:i') }}
+                            </td>
+                            <td class="text-sm text-gray-500">
+                                {{ payment.createdBy.fullName }}
+                            </td>
+                            <td class="no-print">
+                                <div class="flex items-center space-x-2">
+                                    <a href="{{ path('payment_show', {id: payment.id}) }}"
+                                       class="text-iseg-blue-600 hover:text-iseg-blue-900">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </a>
+
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <form method="post" action="{{ path('payment_validate', {id: payment.id}) }}" class="inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('validate' ~ payment.id) }}">
+                                            <button type="submit"
+                                                    onclick="return confirm('Valider ce paiement de {{ payment.amount|number_format(2, ',', ' ') }} DT ?')"
+                                                    class="text-green-600 hover:text-green-900 transition-colors"
+                                                    title="Valider le paiement">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <span class="text-gray-400" title="Seul un administrateur peut valider">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                            </svg>
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-12">
+                                <div class="flex flex-col items-center">
+                                    <div class="bg-green-100 rounded-full p-3 mb-4">
+                                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun paiement en attente</h3>
+                                    <p class="text-gray-500 mb-4">Tous les paiements ont été validés.</p>
+                                    <a href="{{ path('payment_index') }}" class="btn btn-primary">
+                                        Voir tous les paiements
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% if payments|length > 0 %}
+            <!-- Actions en lot (pour les administrateurs) -->
+            {% if is_granted('ROLE_ADMIN') %}
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="text-lg font-semibold text-iseg-navy-900 mb-4">Actions en lot</h3>
+                        <div class="flex items-center justify-between">
+                            <p class="text-gray-600">
+                                Valider tous les paiements en attente ({{ payments|length }} paiements)
+                            </p>
+                            <button onclick="validateAllPayments()" class="btn btn-success">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Valider tout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Statistiques -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div class="text-2xl font-bold text-yellow-600">{{ payments|length }}</div>
+                        <div class="text-sm text-gray-600">Paiements en attente</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body text-center">
+                        {% set totalAmount = 0 %}
+                        {% for payment in payments %}
+                            {% set totalAmount = totalAmount + payment.amount %}
+                        {% endfor %}
+                        <div class="text-2xl font-bold text-iseg-gold-600">{{ totalAmount|number_format(0, ',', ' ') }} DT</div>
+                        <div class="text-sm text-gray-600">Montant total</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body text-center">
+                        {% set oldestPayment = payments|first %}
+                        {% if oldestPayment %}
+                            {% set daysSince = date().diff(oldestPayment.createdAt).days %}
+                            <div class="text-2xl font-bold text-red-600">{{ daysSince }}</div>
+                            <div class="text-sm text-gray-600">Jours (plus ancien)</div>
+                        {% else %}
+                            <div class="text-2xl font-bold text-gray-400">-</div>
+                            <div class="text-sm text-gray-600">Aucun paiement</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <!-- Script pour validation en lot -->
+        <script>
+            function validateAllPayments() {
+                ISEGUtils.confirm(
+                    'Validation en lot',
+                    'Êtes-vous sûr de vouloir valider tous les {{ payments|length }} paiements en attente ?',
+                    function() {
+                        // Ici vous pouvez implémenter la validation en lot
+                        // via une requête AJAX vers un endpoint dédié
+                        ISEGUtils.showToast('Fonctionnalité de validation en lot à implémenter', 'info');
+                    },
+                    'Valider tout',
+                    'Annuler'
+                );
+            }
+
+            // Auto-actualisation toutes les 30 secondes pour voir les nouveaux paiements
+            setInterval(function() {
+                window.location.reload();
+            }, 30000);
+        </script>
+    {% endif %}
+{% endblock %}
