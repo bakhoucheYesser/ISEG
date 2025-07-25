@@ -11,7 +11,7 @@
   ),
   '@hotwired/turbo' => 
   array (
-    'version' => '7.3.0',
+    'version' => '8.0.13',
     'dependencies' => 
     array (
     ),

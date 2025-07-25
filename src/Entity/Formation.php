@@ -56,10 +56,10 @@ class Formation
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'formation', targetEntity: Enrollment::class)]
+    #[ORM\OneToMany(targetEntity: Enrollment::class, mappedBy: 'formation')]
     private Collection $enrollments;
 
-    #[ORM\OneToMany(mappedBy: 'formation', targetEntity: ClassRoom::class)]
+    #[ORM\OneToMany(targetEntity: ClassRoom::class, mappedBy: 'formation')]
     private Collection $classes;
 
     public function __construct()

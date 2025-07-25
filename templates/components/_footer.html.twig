@@ -1,149 +1,191 @@
 {# templates/components/_footer.html.twig #}
 <footer class="bg-white border-t border-gray-200 mt-auto">
-    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <!-- Logo et description -->
-            <div class="md:col-span-2">
-                <div class="flex items-center mb-4">
-                    <div class="bg-iseg-gold-500 p-2 rounded-lg mr-3">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
-                        </svg>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Main footer content -->
+        <div class="py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Logo et description -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-iseg-gold-500 p-2.5 rounded-lg mr-4">
+                            <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-iseg-navy-900">ISEG Tunis</h3>
+                            <p class="text-sm text-gray-600 mt-1">Institut des Sciences Économiques et de Gestion</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-iseg-navy-900">ISEG Tunis</h3>
-                        <p class="text-sm text-gray-600">Institut des Sciences Économiques et de Gestion</p>
+                    <p class="text-gray-600 leading-relaxed max-w-md mb-6">
+                        Système de gestion des étudiants et des paiements développé pour faciliter
+                        l'administration académique et financière de l'institut.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-6 text-sm">
+                        <div class="flex items-center text-gray-500">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            <span class="font-medium">Session:</span>
+                            <span class="ml-1">{{ app.user ? app.user.fullName : 'Utilisateur' }}</span>
+                        </div>
+                        <div class="flex items-center text-gray-500">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
+                            </svg>
+                            <span class="font-medium">IP:</span>
+                            <span class="ml-1">{{ app.request.clientIp }}</span>
+                        </div>
                     </div>
                 </div>
-                <p class="text-gray-600 text-sm leading-relaxed max-w-md">
-                    Système de gestion des étudiants et des paiements développé pour faciliter
-                    l'administration académique et financière de l'institut.
-                </p>
-                <div class="mt-4 flex items-center space-x-4">
-                    <div class="text-xs text-gray-500">
-                        <span class="font-medium">Session:</span> {{ app.user.fullName }}
-                    </div>
-                    <div class="text-xs text-gray-500">
-                        <span class="font-medium">IP:</span> {{ app.request.clientIp }}
-                    </div>
-                </div>
-            </div>
 
-            <!-- Liens rapides -->
-            <div>
-                <h4 class="text-sm font-semibold text-iseg-navy-900 uppercase tracking-wider mb-4">
-                    Liens Rapides
-                </h4>
-                <ul class="space-y-2">
-                    <li>
-                        <a href="{{ path('student_index') }}" class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
-                            Liste des étudiants
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('student_new') }}" class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
-                            Nouvel étudiant
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('payment_index') }}" class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
-                            Gestion paiements
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('statistics') }}" class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
-                            Statistiques
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Support & Contact -->
-            <div>
-                <h4 class="text-sm font-semibold text-iseg-navy-900 uppercase tracking-wider mb-4">
-                    Support
-                </h4>
-                <ul class="space-y-2">
-                    <li>
-                        <a href="#" onclick="ISEGUtils.showToast('Fonctionnalité bientôt disponible', 'info')"
-                           class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
-                            Guide d'utilisation
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" onclick="ISEGUtils.showToast('Contactez l\'administrateur système', 'info')"
-                           class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
-                            Support technique
-                        </a>
-                    </li>
-                    {% if is_granted('ROLE_ADMIN') %}
+                <!-- Liens rapides -->
+                <div>
+                    <h4 class="text-sm font-semibold text-iseg-navy-900 uppercase tracking-wider mb-6">
+                        Navigation
+                    </h4>
+                    <ul class="space-y-3">
                         <li>
-                            <a href="#" class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
-                                Logs système
+                            <a href="{{ path('student_index') }}" class="text-gray-600 hover:text-iseg-navy-900 transition-colors duration-200 flex items-center group">
+                                <svg class="w-4 h-4 mr-2 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                                Liste des étudiants
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-gray-600 hover:text-iseg-navy-900 text-sm transition-colors duration-200">
-                                Sauvegarde
+                            <a href="{{ path('student_new') }}" class="text-gray-600 hover:text-iseg-navy-900 transition-colors duration-200 flex items-center group">
+                                <svg class="w-4 h-4 mr-2 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Nouvel étudiant
                             </a>
                         </li>
-                    {% endif %}
-                </ul>
+                        <li>
+                            <a href="{{ path('payment_index') }}" class="text-gray-600 hover:text-iseg-navy-900 transition-colors duration-200 flex items-center group">
+                                <svg class="w-4 h-4 mr-2 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                Gestion paiements
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('statistics') }}" class="text-gray-600 hover:text-iseg-navy-900 transition-colors duration-200 flex items-center group">
+                                <svg class="w-4 h-4 mr-2 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                                Statistiques
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Support & Contact -->
+                <div>
+                    <h4 class="text-sm font-semibold text-iseg-navy-900 uppercase tracking-wider mb-6">
+                        Support
+                    </h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="#" onclick="showNotification('Fonctionnalité bientôt disponible', 'info')"
+                               class="text-gray-600 hover:text-iseg-navy-900 transition-colors duration-200 flex items-center group">
+                                <svg class="w-4 h-4 mr-2 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                                Guide d'utilisation
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="showNotification('Contactez l\'administrateur système', 'info')"
+                               class="text-gray-600 hover:text-iseg-navy-900 transition-colors duration-200 flex items-center group">
+                                <svg class="w-4 h-4 mr-2 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                </svg>
+                                Support technique
+                            </a>
+                        </li>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li>
+                                <a href="#" class="text-gray-600 hover:text-iseg-navy-900 transition-colors duration-200 flex items-center group">
+                                    <svg class="w-4 h-4 mr-2 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    Logs système
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-gray-600 hover:text-iseg-navy-900 transition-colors duration-200 flex items-center group">
+                                    <svg class="w-4 h-4 mr-2 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12"></path>
+                                    </svg>
+                                    Sauvegarde
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
         </div>
 
         <!-- Statistiques en temps réel -->
-        <div class="mt-8 pt-6 border-t border-gray-200">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-iseg-navy-900" id="total-students">
-                        {{ random(150, 300) }} {# À remplacer par la vraie donnée #}
+        <div class="border-t border-gray-200 py-8">
+            <h4 class="text-lg font-semibold text-iseg-navy-900 mb-6 text-center">Aperçu des statistiques</h4>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="text-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                    <div class="text-2xl font-bold text-iseg-navy-900 mb-1" id="total-students">
+                        {{ random(150, 300) }}
                     </div>
-                    <div class="text-xs text-gray-500 uppercase tracking-wide">Étudiants actifs</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide font-medium">Étudiants actifs</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-iseg-gold-600" id="pending-payments">
-                        {{ random(5, 25) }} {# À remplacer par la vraie donnée #}
+                <div class="text-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                    <div class="text-2xl font-bold text-iseg-gold-600 mb-1" id="pending-payments">
+                        {{ random(5, 25) }}
                     </div>
-                    <div class="text-xs text-gray-500 uppercase tracking-wide">Paiements en attente</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide font-medium">Paiements en attente</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-green-600" id="monthly-revenue">
+                <div class="text-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                    <div class="text-2xl font-bold text-green-600 mb-1" id="monthly-revenue">
                         {{ random(15000, 35000)|number_format(0, ',', ' ') }} DT
                     </div>
-                    <div class="text-xs text-gray-500 uppercase tracking-wide">Revenus ce mois</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide font-medium">Revenus ce mois</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-iseg-blue-600" id="payment-rate">
+                <div class="text-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                    <div class="text-2xl font-bold text-blue-600 mb-1" id="payment-rate">
                         {{ random(75, 95) }}%
                     </div>
-                    <div class="text-xs text-gray-500 uppercase tracking-wide">Taux de paiement</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide font-medium">Taux de paiement</div>
                 </div>
             </div>
         </div>
 
         <!-- Bottom bar -->
-        <div class="mt-8 pt-6 border-t border-gray-200">
-            <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="border-t border-gray-200 py-6">
+            <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
                 <div class="text-sm text-gray-500">
                     © {{ "now"|date("Y") }} ISEG Tunis. Tous droits réservés.
                 </div>
 
-                <div class="flex items-center space-x-6 mt-4 md:mt-0">
+                <div class="flex flex-wrap items-center justify-center lg:justify-end gap-6 text-xs">
                     <!-- Version système -->
-                    <div class="text-xs text-gray-400">
+                    <div class="flex items-center text-gray-400">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
                         Version 1.0.0
                     </div>
 
                     <!-- Statut système -->
                     <div class="flex items-center space-x-2">
-                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span class="text-xs text-gray-500">Système opérationnel</span>
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span class="text-gray-500">Système opérationnel</span>
                     </div>
 
                     <!-- Dernière sauvegarde -->
-                    <div class="text-xs text-gray-400">
-                        Dernière sauvegarde: {{ "now"|date("d/m/Y H:i") }}
+                    <div class="flex items-center text-gray-400">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Sauvegarde: {{ "now"|date("d/m H:i") }}
                     </div>
                 </div>
             </div>
@@ -151,15 +193,14 @@
 
         <!-- Debug info (seulement en développement) -->
         {% if app.environment == 'dev' %}
-            <div class="mt-4 pt-4 border-t border-gray-200">
+            <div class="border-t border-gray-200 py-4">
                 <details class="text-xs text-gray-400">
-                    <summary class="cursor-pointer hover:text-gray-600">Informations de débogage</summary>
-                    <div class="mt-2 bg-gray-50 p-3 rounded font-mono">
-                        <div>Route: {{ app.request.get('_route') }}</div>
-                        <div>Controller: {{ app.request.get('_controller') }}</div>
-                        <div>Method: {{ app.request.method }}</div>
-                        <div>User Agent: {{ app.request.headers.get('User-Agent')|slice(0, 50) }}...</div>
-{#                        <div>Memory: {{ (memory_get_usage(true) / 1024 / 1024)|round(2) }} MB</div>#}
+                    <summary class="cursor-pointer hover:text-gray-600 font-medium">Informations de débogage</summary>
+                    <div class="mt-3 bg-gray-50 p-4 rounded-lg font-mono space-y-1">
+                        <div><span class="font-semibold">Route:</span> {{ app.request.get('_route') }}</div>
+                        <div><span class="font-semibold">Controller:</span> {{ app.request.get('_controller') }}</div>
+                        <div><span class="font-semibold">Method:</span> {{ app.request.method }}</div>
+                        <div><span class="font-semibold">User Agent:</span> {{ app.request.headers.get('User-Agent')|slice(0, 50) }}...</div>
                     </div>
                 </details>
             </div>
@@ -169,15 +210,63 @@
 
 <!-- Scripts pour le footer -->
 <script>
+    // Fonction pour afficher les notifications
+    function showNotification(message, type = 'info') {
+        // Créer l'élément de notification
+        const notification = document.createElement('div');
+        notification.className = `fixed top-20 right-4 z-50 max-w-sm p-4 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full opacity-0`;
+
+        // Définir les couleurs selon le type
+        const typeClasses = {
+            'info': 'bg-blue-500 text-white',
+            'success': 'bg-green-500 text-white',
+            'warning': 'bg-yellow-500 text-white',
+            'error': 'bg-red-500 text-white'
+        };
+
+        notification.className += ` ${typeClasses[type] || typeClasses.info}`;
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+                <span>${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Animer l'entrée
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full', 'opacity-0');
+        }, 100);
+
+        // Auto-suppression après 4 secondes
+        setTimeout(() => {
+            notification.classList.add('translate-x-full', 'opacity-0');
+            setTimeout(() => notification.remove(), 300);
+        }, 4000);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // Mise à jour périodique des statistiques (toutes les 30 secondes)
         function updateFooterStats() {
-            // Ici vous pouvez faire un appel AJAX pour récupérer les vraies statistiques
-            // ISEGUtils.apiCall('/api/stats/footer').then(data => {
-            //     document.getElementById('total-students').textContent = data.totalStudents;
-            //     document.getElementById('pending-payments').textContent = data.pendingPayments;
-            //     // etc...
-            // });
+            // Simulation de mise à jour (remplacez par un appel API réel)
+            const stats = ['total-students', 'pending-payments', 'monthly-revenue', 'payment-rate'];
+            stats.forEach(statId => {
+                const element = document.getElementById(statId);
+                if (element) {
+                    element.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        element.style.transform = 'scale(1)';
+                    }, 150);
+                }
+            });
         }
 
         // Première mise à jour immédiate
@@ -189,7 +278,7 @@
         // Animation au survol des statistiques
         document.querySelectorAll('[id$="-students"], [id$="-payments"], [id$="-revenue"], [id$="-rate"]').forEach(stat => {
             stat.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.1)';
+                this.style.transform = 'scale(1.05)';
                 this.style.transition = 'transform 0.2s ease-in-out';
             });
 
