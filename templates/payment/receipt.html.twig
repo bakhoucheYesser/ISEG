@@ -1,0 +1,229 @@
+{# templates/payment/receipt.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Reçu {{ receipt.receiptNumber }}{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center no-print">
+        <div>
+            <h1 class="text-3xl font-bold text-iseg-navy-900">Reçu de paiement</h1>
+            <p class="text-gray-600 mt-1">{{ receipt.receiptNumber }}</p>
+        </div>
+        <div class="flex space-x-3">
+            <button onclick="window.print()" class="btn btn-primary">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                </svg>
+                Imprimer
+            </button>
+            <a href="{{ path('payment_show', {id: payment.id}) }}" class="btn btn-outline">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Retour au paiement
+            </a>
+        </div>
+    </div>
+
+    <!-- Reçu -->
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden" id="receipt-content">
+        <!-- En-tête de l'institut -->
+        <div class="bg-iseg-navy-900 text-white p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="bg-iseg-gold-500 p-2 rounded-lg">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold">ISEG TUNIS</h1>
+                            <p class="text-iseg-gold-200">Institut des Sciences Économiques et de Gestion</p>
+                        </div>
+                    </div>
+                    <div class="text-sm text-iseg-gold-200">
+                        <p>Adresse: [Adresse de l'institut]</p>
+                        <p>Téléphone: [Numéro de téléphone]</p>
+                        <p>Email: [Email de contact]</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <h2 class="text-xl font-bold text-iseg-gold-300">REÇU DE PAIEMENT</h2>
+                    <p class="text-lg font-semibold">{{ receipt.receiptNumber }}</p>
+                    <p class="text-sm text-iseg-gold-200">{{ receipt.generatedAt|date('d/m/Y H:i') }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenu du reçu -->
+        <div class="p-6">
+            <!-- Informations de l'étudiant -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Informations de l'étudiant</h3>
+                    <dl class="space-y-2">
+                        <div class="flex">
+                            <dt class="text-sm font-medium text-gray-500 w-24">Nom:</dt>
+                            <dd class="text-sm text-gray-900">{{ receipt.studentName }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="text-sm font-medium text-gray-500 w-24">CIN:</dt>
+                            <dd class="text-sm text-gray-900">{{ payment.enrollment.student.cin }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="text-sm font-medium text-gray-500 w-24">Formation:</dt>
+                            <dd class="text-sm text-gray-900">{{ receipt.formationName }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="text-sm font-medium text-gray-500 w-24">Classe:</dt>
+                            <dd class="text-sm text-gray-900">{{ payment.enrollment.classRoom.name }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="text-sm font-medium text-gray-500 w-24">Année:</dt>
+                            <dd class="text-sm text-gray-900">{{ payment.enrollment.academicYear }}</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Détails du paiement</h3>
+                    <dl class="space-y-2">
+                        <div class="flex">
+                            <dt class="text-sm font-medium text-gray-500 w-32">Date de paiement:</dt>
+                            <dd class="text-sm text-gray-900">{{ receipt.paymentDate|date('d/m/Y') }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="text-sm font-medium text-gray-500 w-32">Type:</dt>
+                            <dd class="text-sm text-gray-900">{{ receipt.formattedPaymentType }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="text-sm font-medium text-gray-500 w-32">Méthode:</dt>
+                            <dd class="text-sm text-gray-900">{{ payment.formattedPaymentMethod }}</dd>
+                        </div>
+                        <div class="flex">
+                            <dt class="text-sm font-medium text-gray-500 w-32">Référence:</dt>
+                            <dd class="text-sm text-gray-900">{{ payment.reference ?: payment.generateReference() }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Montant du paiement -->
+            <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                <div class="text-center">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Montant payé</h3>
+                    <div class="text-4xl font-bold text-iseg-navy-900">{{ receipt.formattedAmount }}</div>
+                    <p class="text-sm text-gray-600 mt-2">{{ receipt.formattedPaymentType }}</p>
+                </div>
+            </div>
+
+            <!-- Récapitulatif des frais -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-blue-50 p-4 rounded-lg text-center">
+                    <h4 class="text-sm font-medium text-blue-800">Montant total</h4>
+                    <div class="text-lg font-semibold text-blue-900">
+                        {{ payment.enrollment.totalAmount|number_format(2, ',', ' ') }} DT
+                    </div>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg text-center">
+                    <h4 class="text-sm font-medium text-green-800">Total payé</h4>
+                    <div class="text-lg font-semibold text-green-900">
+                        {{ payment.enrollment.totalPaid|number_format(2, ',', ' ') }} DT
+                    </div>
+                </div>
+                <div class="bg-yellow-50 p-4 rounded-lg text-center">
+                    <h4 class="text-sm font-medium text-yellow-800">Reste à payer</h4>
+                    <div class="text-lg font-semibold text-yellow-900">
+                        {{ payment.enrollment.remainingAmount|number_format(2, ',', ' ') }} DT
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes et conditions -->
+            {% if payment.description %}
+                <div class="mb-6">
+                    <h4 class="text-sm font-medium text-gray-900 mb-2">Description</h4>
+                    <p class="text-sm text-gray-700">{{ payment.description }}</p>
+                </div>
+            {% endif %}
+
+            <!-- Pied de page -->
+            <div class="border-t pt-4 mt-6">
+                <div class="flex justify-between items-end">
+                    <div class="text-xs text-gray-500">
+                        <p>Reçu généré par: {{ receipt.generatedBy.fullName }}</p>
+                        <p>Date de génération: {{ receipt.generatedAt|date('d/m/Y H:i:s') }}</p>
+                        {% if receipt.printedCount > 0 %}
+                            <p>Dernière impression: {{ receipt.lastPrintedAt|date('d/m/Y H:i') }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="text-right">
+                        <div class="border-t border-gray-300 pt-2 mt-8 w-48">
+                            <p class="text-xs text-gray-500">Signature et cachet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-between items-center no-print">
+        <div class="text-sm text-gray-500">
+            {% if receipt.printedCount > 0 %}
+                Ce reçu a été imprimé {{ receipt.printedCount }} fois.
+                {% if receipt.lastPrintedAt %}
+                    Dernière impression: {{ receipt.lastPrintedAt|date('d/m/Y H:i') }}
+                {% endif %}
+            {% else %}
+                Ce reçu n'a pas encore été imprimé.
+            {% endif %}
+        </div>
+        <div class="flex space-x-3">
+            <a href="{{ path('receipt_index') }}" class="btn btn-outline">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                </svg>
+                Voir tous les reçus
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Styles d'impression -->
+<style>
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #receipt-content {
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        .bg-iseg-navy-900 {
+            background-color: #1e1b4b !important;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .text-white {
+            color: white !important;
+        }
+
+        .bg-iseg-gold-500 {
+            background-color: #f59e0b !important;
+            -webkit-print-color-adjust: exact;
+        }
+    }
+</style>
+
+<!-- Script pour marquer comme imprimé -->
+{% endblock %}

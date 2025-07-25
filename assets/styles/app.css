@@ -1,6 +1,106 @@
 @import "tailwindcss";
-@source not "../../public";
 
-body {
-    background-color: lightgray;
+/* Custom CSS Variables for ISEG Colors */
+:root {
+    --iseg-navy-50: #f0f4ff;
+    --iseg-navy-100: #e0e7ff;
+    --iseg-navy-200: #c7d2fe;
+    --iseg-navy-300: #a5b4fc;
+    --iseg-navy-400: #818cf8;
+    --iseg-navy-500: #6366f1;
+    --iseg-navy-600: #4f46e5;
+    --iseg-navy-700: #4338ca;
+    --iseg-navy-800: #3730a3;
+    --iseg-navy-900: #312e81;
+
+    --iseg-gold-50: #fffbeb;
+    --iseg-gold-100: #fef3c7;
+    --iseg-gold-200: #fde68a;
+    --iseg-gold-300: #fcd34d;
+    --iseg-gold-400: #fbbf24;
+    --iseg-gold-500: #f59e0b;
+    --iseg-gold-600: #d97706;
+    --iseg-gold-700: #b45309;
+    --iseg-gold-800: #92400e;
+    --iseg-gold-900: #78350f;
+}
+
+/* Navigation Styles */
+.nav-link {
+    color: var(--iseg-gold-100);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: white;
+}
+
+.nav-link.active {
+    background-color: var(--iseg-navy-700);
+    color: white;
+}
+
+.dropdown-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: #374151;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.dropdown-link:hover {
+    background-color: var(--iseg-gold-50);
+    color: var(--iseg-navy-900);
+}
+
+.nav-text {
+    white-space: nowrap;
+}
+
+/* Alert styles */
+.alert-success {
+    @apply bg-green-50 text-green-800 border border-green-200;
+}
+
+.alert-error {
+    @apply bg-red-50 text-red-800 border border-red-200;
+}
+
+.alert-warning {
+    @apply bg-yellow-50 text-yellow-800 border border-yellow-200;
+}
+
+.alert-info {
+    @apply bg-blue-50 text-blue-800 border border-blue-200;
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Form validation styles */
+.field-error {
+    @apply text-red-600 text-sm mt-1;
 }

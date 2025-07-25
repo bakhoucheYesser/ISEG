@@ -3,17 +3,42 @@
 /* STYLES PERSONNALISÉS ISEG */
 /* ============================================= */
 
-/* Formulaires */
+/* Définir les couleurs ISEG comme variables CSS */
+:root {
+    --iseg-navy-50: #f0f4ff;
+    --iseg-navy-100: #e0e7ff;
+    --iseg-navy-200: #c7d2fe;
+    --iseg-navy-300: #a5b4fc;
+    --iseg-navy-400: #818cf8;
+    --iseg-navy-500: #6366f1;
+    --iseg-navy-600: #4f46e5;
+    --iseg-navy-700: #4338ca;
+    --iseg-navy-800: #3730a3;
+    --iseg-navy-900: #312e81;
+
+    --iseg-gold-50: #fffbeb;
+    --iseg-gold-100: #fef3c7;
+    --iseg-gold-200: #fde68a;
+    --iseg-gold-300: #fcd34d;
+    --iseg-gold-400: #fbbf24;
+    --iseg-gold-500: #f59e0b;
+    --iseg-gold-600: #d97706;
+    --iseg-gold-700: #b45309;
+    --iseg-gold-800: #92400e;
+    --iseg-gold-900: #78350f;
+}
+
+/* Formulaires avec couleurs standards */
 .form-input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-iseg-gold-500 focus:border-iseg-gold-500 transition-colors duration-200;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200;
 }
 
 .form-select {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-iseg-gold-500 focus:border-iseg-gold-500 bg-white transition-colors duration-200;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-colors duration-200;
 }
 
 .form-textarea {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-iseg-gold-500 focus:border-iseg-gold-500 resize-none transition-colors duration-200;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-colors duration-200;
 }
 
 .form-label {
@@ -28,17 +53,31 @@
     @apply text-gray-500 text-sm mt-1;
 }
 
-/* Boutons */
+/* Boutons avec couleurs ISEG */
 .btn {
     @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-200;
 }
 
 .btn-primary {
-    @apply bg-iseg-navy-900 text-white hover:bg-iseg-navy-800 focus:ring-iseg-navy-500;
+    background-color: var(--iseg-navy-900);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: var(--iseg-navy-800);
+}
+.btn-primary:focus {
+    --tw-ring-color: var(--iseg-navy-500);
 }
 
 .btn-secondary {
-    @apply bg-iseg-gold-500 text-white hover:bg-iseg-gold-600 focus:ring-iseg-gold-500;
+    background-color: var(--iseg-gold-500);
+    color: white;
+}
+.btn-secondary:hover {
+    background-color: var(--iseg-gold-600);
+}
+.btn-secondary:focus {
+    --tw-ring-color: var(--iseg-gold-500);
 }
 
 .btn-success {
@@ -50,7 +89,13 @@
 }
 
 .btn-outline {
-    @apply bg-white text-iseg-navy-900 border-iseg-navy-900 hover:bg-iseg-navy-900 hover:text-white;
+    background-color: white;
+    color: var(--iseg-navy-900);
+    border: 1px solid var(--iseg-navy-900);
+}
+.btn-outline:hover {
+    background-color: var(--iseg-navy-900);
+    color: white;
 }
 
 /* Cards */
@@ -92,7 +137,7 @@
 }
 
 .table tbody tr:hover {
-    @apply bg-iseg-gold-50;
+    background-color: var(--iseg-gold-50);
 }
 
 /* Badges */
@@ -113,7 +158,29 @@
 }
 
 .badge-info {
-    @apply bg-iseg-blue-100 text-iseg-blue-800;
+    @apply bg-blue-100 text-blue-800;
+}
+
+/* Classes spécifiques ISEG */
+.badge-iseg {
+    background-color: var(--iseg-gold-100);
+    color: var(--iseg-gold-800);
+}
+
+.text-iseg-navy {
+    color: var(--iseg-navy-900);
+}
+
+.text-iseg-gold {
+    color: var(--iseg-gold-600);
+}
+
+.bg-iseg-navy {
+    background-color: var(--iseg-navy-900);
+}
+
+.bg-iseg-gold {
+    background-color: var(--iseg-gold-500);
 }
 
 /* Pagination */
@@ -122,11 +189,19 @@
 }
 
 .pagination-link {
-    @apply relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-iseg-gold-500 focus:border-iseg-gold-500;
+    @apply relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:border-blue-500;
+}
+
+.pagination-link:focus {
+    --tw-ring-color: var(--iseg-gold-500);
+    border-color: var(--iseg-gold-500);
 }
 
 .pagination-link.current {
-    @apply z-10 bg-iseg-gold-50 border-iseg-gold-500 text-iseg-gold-600;
+    z-index: 10;
+    background-color: var(--iseg-gold-50);
+    border-color: var(--iseg-gold-500);
+    color: var(--iseg-gold-600);
 }
 
 /* Animations */
@@ -150,7 +225,27 @@
 
 /* Loading */
 .loading-spinner {
-    @apply inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-iseg-navy-900;
+    @apply inline-block animate-spin rounded-full h-4 w-4 border-b-2;
+    border-bottom-color: var(--iseg-navy-900);
+}
+
+/* Navigation personnalisée */
+.nav-iseg {
+    background-color: var(--iseg-navy-900);
+}
+
+.nav-link-iseg {
+    color: var(--iseg-gold-100);
+    transition: color 0.2s ease;
+}
+
+.nav-link-iseg:hover {
+    color: white;
+}
+
+.nav-link-iseg.active {
+    background-color: var(--iseg-navy-700);
+    color: white;
 }
 
 /* Responsive utilities */
@@ -182,5 +277,18 @@
     body {
         font-size: 12pt;
         line-height: 1.4;
+    }
+
+    /* Ensure ISEG colors print correctly */
+    .btn-primary,
+    .bg-iseg-navy {
+        background-color: #312e81 !important;
+        color: white !important;
+    }
+
+    .btn-secondary,
+    .bg-iseg-gold {
+        background-color: #f59e0b !important;
+        color: white !important;
     }
 }

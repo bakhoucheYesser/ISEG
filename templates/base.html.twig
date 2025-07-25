@@ -3,353 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{% block meta_description %}Système de gestion des étudiants et paiements - Institut des Sciences Économiques et de Gestion{% endblock %}">
-    <meta name="author" content="ISEG Tunis">
-
-    <title>{% block title %}ISEG{% endblock %} - Institut des Sciences Économiques et de Gestion</title>
+    <title>{% block title %}ISEG - Gestion Étudiants{% endblock %}</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
 
-    <!-- CSS -->
+    <!-- Tailwind CSS via PostCSS (Production ready) -->
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
-        <!-- Tailwind CSS -->
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script>
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        colors: {
-                            'iseg-navy': {
-                                50: '#f0f4ff',
-                                100: '#e0e7ff',
-                                200: '#c7d2fe',
-                                300: '#a5b4fc',
-                                400: '#818cf8',
-                                500: '#6366f1',
-                                600: '#4f46e5',
-                                700: '#4338ca',
-                                800: '#3730a3',
-                                900: '#312e81',
-                                950: '#1e1b4b'
-                            },
-                            'iseg-gold': {
-                                50: '#fffbeb',
-                                100: '#fef3c7',
-                                200: '#fde68a',
-                                300: '#fcd34d',
-                                400: '#fbbf24',
-                                500: '#f59e0b',
-                                600: '#d97706',
-                                700: '#b45309',
-                                800: '#92400e',
-                                900: '#78350f',
-                                950: '#451a03'
-                            },
-                            'iseg-blue': {
-                                50: '#eff6ff',
-                                100: '#dbeafe',
-                                200: '#bfdbfe',
-                                300: '#93c5fd',
-                                400: '#60a5fa',
-                                500: '#3b82f6',
-                                600: '#2563eb',
-                                700: '#1d4ed8',
-                                800: '#1e40af',
-                                900: '#1e3a8a',
-                                950: '#172554'
-                            }
-                        },
-                        fontFamily: {
-                            'sans': ['Inter', 'system-ui', 'sans-serif'],
-                        }
-                    }
-                }
-            }
-        </script>
-        <!-- Google Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <!-- Custom CSS -->
-        <style>
-            .iseg-gradient {
-                background: linear-gradient(135deg, #312e81 0%, #4f46e5 50%, #f59e0b 100%);
-            }
-            .iseg-shadow {
-                box-shadow: 0 10px 25px -5px rgba(49, 46, 129, 0.1), 0 10px 10px -5px rgba(49, 46, 129, 0.04);
-            }
-            .loading {
-                animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-            }
-        </style>
     {% endblock %}
-</head>
 
-<body class="bg-gray-50 font-sans antialiased min-h-screen">
-{% block body %}
-    <!-- Loading Spinner (masqué par défaut) -->
-    <div id="loading-spinner" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-        <div class="text-center">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-iseg-navy-900 mx-auto mb-4"></div>
-            <p class="text-iseg-navy-700 font-medium">Chargement...</p>
-        </div>
-    </div>
+    <!-- Custom CSS Variables for ISEG Colors -->
+    <style>
+        :root {
+            --iseg-navy-50: #f0f4ff;
+            --iseg-navy-100: #e0e7ff;
+            --iseg-navy-200: #c7d2fe;
+            --iseg-navy-300: #a5b4fc;
+            --iseg-navy-400: #818cf8;
+            --iseg-navy-500: #6366f1;
+            --iseg-navy-600: #4f46e5;
+            --iseg-navy-700: #4338ca;
+            --iseg-navy-800: #3730a3;
+            --iseg-navy-900: #312e81;
 
-    <!-- Navigation principale -->
-    {% if app.user %}
-        {% include 'components/_navbar.html.twig' %}
-    {% endif %}
-
-    <!-- Alertes Flash -->
-    {% include 'components/_flash_messages.html.twig' %}
-
-    <!-- Contenu principal -->
-    <main class="{% if app.user %}pt-16{% endif %}">
-        {% block main_content %}
-            <div class="container mx-auto px-4 py-8">
-                <div class="max-w-7xl mx-auto">
-                    {% block content %}{% endblock %}
-                </div>
-            </div>
-        {% endblock %}
-    </main>
-
-    <!-- Footer -->
-    {% if app.user %}
-        {% include 'components/_footer.html.twig' %}
-    {% endif %}
-
-    <!-- Modal Container -->
-    <div id="modal-container"></div>
-
-    <!-- Confirmation Dialog -->
-    <div id="confirmation-dialog" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
-                <div class="p-6">
-                    <div class="flex items-center mb-4">
-                        <div class="bg-yellow-100 rounded-full p-2 mr-3">
-                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold text-iseg-navy-900" id="confirmation-title">Confirmation</h3>
-                    </div>
-                    <p class="text-gray-600 mb-6" id="confirmation-message">Êtes-vous sûr de vouloir effectuer cette action ?</p>
-                    <div class="flex justify-end space-x-3">
-                        <button id="confirmation-cancel" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                            Annuler
-                        </button>
-                        <button id="confirmation-confirm" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                            Confirmer
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endblock %}
-
-<!-- JavaScript -->
-{% block javascripts %}
-    {{ encore_entry_script_tags('app') }}
-
-    <!-- Scripts utilitaires ISEG -->
-    <script>
-        // Configuration globale ISEG
-        window.ISEG = {
-            baseUrl: '{{ app.request.schemeAndHttpHost }}',
-            locale: '{{ app.request.locale }}',
-            csrf: '{{ csrf_token('global') }}',
-            user: {{ app.user ? {
-                id: app.user.id,
-                login: app.user.login,
-                role: app.user.role,
-                fullName: app.user.fullName
-            } | json_encode : null }}
-        };
-
-        // Utilitaires généraux
-        class ISEGUtils {
-            // Afficher le spinner de chargement
-            static showLoading() {
-                document.getElementById('loading-spinner').classList.remove('hidden');
-            }
-
-            // Masquer le spinner de chargement
-            static hideLoading() {
-                document.getElementById('loading-spinner').classList.add('hidden');
-            }
-
-            // Afficher une notification toast
-            static showToast(message, type = 'info', duration = 5000) {
-                const colors = {
-                    success: 'bg-green-500',
-                    error: 'bg-red-500',
-                    warning: 'bg-yellow-500',
-                    info: 'bg-iseg-blue-500'
-                };
-
-                const toast = document.createElement('div');
-                toast.className = `fixed top-20 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
-                toast.innerHTML = `
-                        <div class="flex items-center space-x-2">
-                            <span>${message}</span>
-                            <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white/80 hover:text-white">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    `;
-
-                document.body.appendChild(toast);
-
-                // Animer l'entrée
-                setTimeout(() => toast.classList.remove('translate-x-full'), 100);
-
-                // Auto-suppression
-                setTimeout(() => {
-                    toast.classList.add('translate-x-full');
-                    setTimeout(() => toast.remove(), 300);
-                }, duration);
-            }
-
-            // Dialogue de confirmation
-            static confirm(title, message, onConfirm, confirmText = 'Confirmer', cancelText = 'Annuler') {
-                const dialog = document.getElementById('confirmation-dialog');
-                const titleEl = document.getElementById('confirmation-title');
-                const messageEl = document.getElementById('confirmation-message');
-                const confirmBtn = document.getElementById('confirmation-confirm');
-                const cancelBtn = document.getElementById('confirmation-cancel');
-
-                titleEl.textContent = title;
-                messageEl.textContent = message;
-                confirmBtn.textContent = confirmText;
-                cancelBtn.textContent = cancelText;
-
-                dialog.classList.remove('hidden');
-
-                // Gestionnaires d'événements
-                const handleConfirm = () => {
-                    dialog.classList.add('hidden');
-                    onConfirm();
-                    cleanup();
-                };
-
-                const handleCancel = () => {
-                    dialog.classList.add('hidden');
-                    cleanup();
-                };
-
-                const cleanup = () => {
-                    confirmBtn.removeEventListener('click', handleConfirm);
-                    cancelBtn.removeEventListener('click', handleCancel);
-                };
-
-                confirmBtn.addEventListener('click', handleConfirm);
-                cancelBtn.addEventListener('click', handleCancel);
-
-                // Fermer avec Échap
-                const handleEscape = (e) => {
-                    if (e.key === 'Escape') {
-                        handleCancel();
-                        document.removeEventListener('keydown', handleEscape);
-                    }
-                };
-                document.addEventListener('keydown', handleEscape);
-            }
-
-            // Formater les montants en dinars tunisiens
-            static formatCurrency(amount) {
-                return new Intl.NumberFormat('fr-TN', {
-                    style: 'currency',
-                    currency: 'TND'
-                }).format(amount);
-            }
-
-            // Formater les dates
-            static formatDate(date, locale = 'fr-FR') {
-                return new Intl.DateTimeFormat(locale, {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                }).format(new Date(date));
-            }
-
-            // Requête AJAX avec gestion d'erreurs
-            static async apiCall(url, options = {}) {
-                this.showLoading();
-
-                try {
-                    const response = await fetch(url, {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-Token': window.ISEG.csrf,
-                            ...options.headers
-                        },
-                        ...options
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-
-                    return await response.json();
-                } catch (error) {
-                    this.showToast('Erreur de connexion: ' + error.message, 'error');
-                    throw error;
-                } finally {
-                    this.hideLoading();
-                }
-            }
+            --iseg-gold-50: #fffbeb;
+            --iseg-gold-100: #fef3c7;
+            --iseg-gold-200: #fde68a;
+            --iseg-gold-300: #fcd34d;
+            --iseg-gold-400: #fbbf24;
+            --iseg-gold-500: #f59e0b;
+            --iseg-gold-600: #d97706;
+            --iseg-gold-700: #b45309;
+            --iseg-gold-800: #92400e;
+            --iseg-gold-900: #78350f;
         }
 
-        // Initialisation globale
-        document.addEventListener('DOMContentLoaded', function() {
-            // Auto-masquer les alertes flash après 5 secondes
-            document.querySelectorAll('.flash-message').forEach(alert => {
-                setTimeout(() => {
-                    alert.style.opacity = '0';
-                    setTimeout(() => alert.remove(), 300);
-                }, 5000);
-            });
+        .nav-link {
+            color: var(--iseg-gold-100);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
 
-            // Gestionnaire global pour les liens de confirmation
-            document.addEventListener('click', function(e) {
-                const target = e.target.closest('[data-confirm]');
-                if (target) {
-                    e.preventDefault();
-                    const message = target.dataset.confirm;
-                    const href = target.href || target.dataset.href;
+        .nav-link:hover {
+            color: white;
+        }
 
-                    ISEGUtils.confirm('Confirmation', message, () => {
-                        if (href) {
-                            window.location.href = href;
-                        } else if (target.form) {
-                            target.form.submit();
-                        }
-                    });
-                }
-            });
+        .nav-link.active {
+            background-color: var(--iseg-navy-700);
+            color: white;
+        }
 
-            // Session timeout warning (7h45min = 27900000ms pour avertir 15min avant expiration)
-            {% if app.user %}
-            setTimeout(() => {
-                ISEGUtils.showToast('Votre session expirera dans 15 minutes. Cliquez pour prolonger.', 'warning', 15000);
-            }, 27900000);
-            {% endif %}
+        .dropdown-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: #374151;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .dropdown-link:hover {
+            background-color: var(--iseg-gold-50);
+            color: var(--iseg-navy-900);
+        }
+
+        .nav-text {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans antialiased min-h-screen" data-turbo-suppress-warning>
+<!-- Loading Spinner -->
+<div id="loading-spinner" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p class="text-blue-700 font-medium">Chargement...</p>
+    </div>
+</div>
+
+<!-- Navigation principale -->
+<nav class="bg-blue-900 shadow-lg fixed top-0 left-0 right-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo et titre -->
+            <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 flex items-center">
+                    <!-- Logo ISEG -->
+                    <div class="bg-yellow-500 p-2 rounded-lg mr-3">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">ISEG</h1>
+                        <p class="text-xs text-yellow-200">Gestion Étudiants</p>
+                    </div>
+                </div>
+
+                <!-- Navigation principale (desktop) -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{{ path('dashboard') }}" class="nav-link {{ app.request.get('_route') starts with 'dashboard' ? 'active' : '' }}">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2V7zm16 3h-6m-2 5h6m-6 4h6m-6-8h6"></path>
+                            </svg>
+                            <span class="nav-text">Tableau de bord</span>
+                        </a>
+
+                        <div class="relative group">
+                            <button class="nav-link group-hover:text-yellow-300 flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                </svg>
+                                <span class="nav-text">Étudiants</span>
+                                <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <!-- Dropdown menu -->
+                            <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <div class="py-1">
+                                    <a href="{{ path('student_index') }}" class="dropdown-link">
+                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                        </svg>
+                                        <span class="nav-text">Liste des étudiants</span>
+                                    </a>
+                                    <a href="{{ path('student_new') }}" class="dropdown-link">
+                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                        </svg>
+                                        <span class="nav-text">Nouvel étudiant</span>
+                                    </a>
+                                    <a href="{{ path('student_search') }}" class="dropdown-link">
+                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                        <span class="nav-text">Rechercher</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative group">
+                            <button class="nav-link group-hover:text-yellow-300 flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                <span class="nav-text">Paiements</span>
+                                <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <div class="py-1">
+                                    <a href="{{ path('payment_index') }}" class="dropdown-link">
+                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                        </svg>
+                                        <span class="nav-text">Tous les paiements</span>
+                                    </a>
+                                    <a href="{{ path('payment_pending') }}" class="dropdown-link">
+                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span class="nav-text">En attente</span>
+                                    </a>
+                                    <a href="{{ path('receipt_index') }}" class="dropdown-link">
+                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        <span class="nav-text">Reçus</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="{{ path('statistics') }}" class="nav-link {{ app.request.get('_route') starts with 'statistics' ? 'active' : '' }}">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                            <span class="nav-text">Statistiques</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User menu -->
+            <div class="flex items-center space-x-4">
+                <div class="relative group">
+                    <button class="flex items-center space-x-2 text-yellow-100 hover:text-white focus:outline-none">
+                        <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                                <span class="text-sm font-medium text-white">
+                                    {{ app.user ? app.user.initials : 'U' }}
+                                </span>
+                        </div>
+                        <span class="hidden md:block text-sm">{{ app.user ? app.user.fullName : 'Utilisateur' }}</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <div class="py-1">
+                            <div class="px-4 py-2 border-b border-gray-100">
+                                <p class="text-sm font-medium text-gray-900">{{ app.user ? app.user.fullName : 'Utilisateur' }}</p>
+                                <p class="text-xs text-gray-500">{{ app.user ? app.user.formattedRole : 'Role' }}</p>
+                            </div>
+                            <a href="{{ path('app_logout') }}" class="dropdown-link text-red-600 hover:bg-red-50">
+                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                </svg>
+                                <span class="nav-text">Déconnexion</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main content -->
+<main class="pt-16 min-h-screen">
+    {% for type, messages in app.flashes %}
+        <div class="flash-messages">
+            {% for message in messages %}
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+                    <div class="alert alert-{{ type }} mb-4 p-4 rounded-md
+                            {{ type == 'success' ? 'bg-green-50 text-green-800 border border-green-200' : '' }}
+                            {{ type == 'error' ? 'bg-red-50 text-red-800 border border-red-200' : '' }}
+                            {{ type == 'warning' ? 'bg-yellow-50 text-yellow-800 border border-yellow-200' : '' }}
+                            {{ type == 'info' ? 'bg-blue-50 text-blue-800 border border-blue-200' : '' }}
+                        ">
+                        <div class="flex items-center">
+                            {% if type == 'success' %}
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                            {% elseif type == 'error' %}
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            {% endif %}
+                            {{ message }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<!-- Scripts moved to head for better Turbo compatibility -->
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+
+<!-- Custom JavaScript for enhanced functionality -->
+<script>
+    // Loading spinner management
+    document.addEventListener('DOMContentLoaded', function() {
+        const spinner = document.getElementById('loading-spinner');
+
+        // Show spinner on form submissions
+        document.addEventListener('submit', function() {
+            if (spinner) spinner.classList.remove('hidden');
         });
 
-        // Rendre ISEGUtils disponible globalement
-        window.ISEGUtils = ISEGUtils;
-    </script>
+        // Hide spinner when page loads
+        window.addEventListener('load', function() {
+            if (spinner) spinner.classList.add('hidden');
+        });
 
-    {% block extra_javascripts %}{% endblock %}
-{% endblock %}
+        // Turbo integration
+        document.addEventListener('turbo:submit-start', function() {
+            if (spinner) spinner.classList.remove('hidden');
+        });
+
+        document.addEventListener('turbo:submit-end', function() {
+            if (spinner) spinner.classList.add('hidden');
+        });
+    });
+
+    // Auto-hide flash messages
+    document.addEventListener('DOMContentLoaded', function() {
+        const flashMessages = document.querySelectorAll('.flash-messages .alert');
+        flashMessages.forEach(function(message) {
+            setTimeout(function() {
+                message.style.transition = 'opacity 0.3s ease-out';
+                message.style.opacity = '0';
+                setTimeout(function() {
+                    message.remove();
+                }, 300);
+            }, 5000);
+        });
+    });
+</script>
 </body>
 </html>

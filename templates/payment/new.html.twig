@@ -1,0 +1,266 @@
+{# templates/payment/new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau paiement{% endblock %}
+
+{% block content %}
+    <div class="space-y-8">
+        <!-- Header -->
+        <div>
+            <nav class="flex" aria-label="Breadcrumb">
+                <ol class="flex items-center space-x-4">
+                    <li>
+                        <a href="{{ path('dashboard') }}" class="text-gray-400 hover:text-gray-500">
+                            <svg class="flex-shrink-0 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <a href="{{ path('payment_index') }}" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">Paiements</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="ml-4 text-sm font-medium text-gray-500">Nouveau paiement</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+            <div class="mt-4 flex justify-between items-start">
+                <div>
+                    <h1 class="text-3xl font-bold text-iseg-navy-900">Nouveau paiement</h1>
+                    <p class="text-gray-600 mt-1">Enregistrer un paiement pour {{ enrollment.student.fullName }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire de paiement -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-lg font-semibold text-iseg-navy-900">Détails du paiement</h2>
+                        <p class="text-sm text-gray-600">Saisissez les informations du paiement</p>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+
+                        <!-- Montant et date -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                {{ form_label(form.amount, null, {'label_attr': {'class': 'form-label'}}) }} *
+                                {{ form_widget(form.amount, {'attr': {'class': 'form-input'}}) }}
+                                {{ form_errors(form.amount) }}
+                                <p class="form-help">Montant en dinars tunisiens</p>
+                            </div>
+
+                            <div>
+                                {{ form_label(form.paymentDate, null, {'label_attr': {'class': 'form-label'}}) }} *
+                                {{ form_widget(form.paymentDate, {'attr': {'class': 'form-input'}}) }}
+                                {{ form_errors(form.paymentDate) }}
+                            </div>
+                        </div>
+
+                        <!-- Type et méthode de paiement -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                {{ form_label(form.paymentType, null, {'label_attr': {'class': 'form-label'}}) }} *
+                                {{ form_widget(form.paymentType, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.paymentType) }}
+                            </div>
+
+                            <div>
+                                <label class="form-label">Méthode de paiement *</label>
+                                <select name="payment_method" class="form-select" required>
+                                    <option value="">Sélectionnez une méthode</option>
+                                    <option value="CASH">Espèces</option>
+                                    <option value="CHECK">Chèque</option>
+                                    <option value="BANK_TRANSFER">Virement bancaire</option>
+                                    <option value="CREDIT_CARD">Carte de crédit</option>
+                                    <option value="ONLINE">Paiement en ligne</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            {{ form_label(form.description, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-textarea', 'rows': 3}}) }}
+                            {{ form_errors(form.description) }}
+                            <p class="form-help">Description optionnelle du paiement</p>
+                        </div>
+
+                        <!-- Boutons d'action -->
+                        <div class="flex justify-between items-center pt-6 border-t">
+                            <a href="{{ path('student_show', {id: enrollment.student.id}) }}" class="btn btn-outline">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
+                                Annuler
+                            </a>
+
+                            <button type="submit" class="btn btn-primary">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                Enregistrer le paiement
+                            </button>
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="space-y-6">
+                    <!-- Informations sur l'étudiant -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-lg font-semibold text-iseg-navy-900">Étudiant</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="flex-shrink-0">
+                                    <div class="h-12 w-12 rounded-full bg-iseg-gold-100 flex items-center justify-center">
+                                        <span class="text-sm font-medium text-iseg-gold-800">
+                                            {{ enrollment.student.firstName|first }}{{ enrollment.student.lastName|first }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-900">{{ enrollment.student.fullName }}</div>
+                                    <div class="text-sm text-gray-500">{{ enrollment.student.cin }}</div>
+                                </div>
+                            </div>
+
+                            <dl class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <dt class="text-gray-500">Formation:</dt>
+                                    <dd class="text-gray-900">{{ enrollment.formation.name }}</dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="text-gray-500">Classe:</dt>
+                                    <dd class="text-gray-900">{{ enrollment.classRoom.name }}</dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="text-gray-500">Année:</dt>
+                                    <dd class="text-gray-900">{{ enrollment.academicYear }}</dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <!-- Situation financière -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-lg font-semibold text-iseg-navy-900">Situation financière</h3>
+                        </div>
+                        <div class="card-body">
+                            <dl class="space-y-3">
+                                <div class="flex justify-between">
+                                    <dt class="text-sm font-medium text-gray-500">Montant total:</dt>
+                                    <dd class="text-sm font-semibold text-gray-900">
+                                        {{ enrollment.totalAmount|number_format(2, ',', ' ') }} DT
+                                    </dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="text-sm font-medium text-green-600">Montant payé:</dt>
+                                    <dd class="text-sm font-semibold text-green-900">
+                                        {{ enrollment.totalPaid|number_format(2, ',', ' ') }} DT
+                                    </dd>
+                                </div>
+                                <div class="flex justify-between border-t pt-3">
+                                    <dt class="text-sm font-medium text-yellow-600">Reste à payer:</dt>
+                                    <dd class="text-sm font-semibold text-yellow-900">
+                                        {{ enrollment.remainingAmount|number_format(2, ',', ' ') }} DT
+                                    </dd>
+                                </div>
+                            </dl>
+
+                            <!-- Barre de progression -->
+                            <div class="mt-4">
+                                <div class="flex justify-between text-xs text-gray-600 mb-1">
+                                    <span>Progression</span>
+                                    {% set progress = (enrollment.totalPaid / enrollment.totalAmount * 100)|round %}
+                                    <span>{{ progress }}%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: {{ progress }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Montants suggérés -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-lg font-semibold text-iseg-navy-900">Montants suggérés</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="space-y-2">
+                                <button type="button" onclick="setAmount({{ enrollment.remainingAmount }})"
+                                        class="w-full text-left p-2 bg-gray-50 hover:bg-gray-100 rounded text-sm">
+                                    Solde complet: {{ enrollment.remainingAmount|number_format(2, ',', ' ') }} DT
+                                </button>
+                                {% if enrollment.remainingAmount > 1000 %}
+                                    <button type="button" onclick="setAmount({{ (enrollment.remainingAmount / 2)|round(2) }})"
+                                            class="w-full text-left p-2 bg-gray-50 hover:bg-gray-100 rounded text-sm">
+                                        50%: {{ (enrollment.remainingAmount / 2)|number_format(2, ',', ' ') }} DT
+                                    </button>
+                                {% endif %}
+                                <button type="button" onclick="setAmount(500)"
+                                        class="w-full text-left p-2 bg-gray-50 hover:bg-gray-100 rounded text-sm">
+                                    Acompte: 500,00 DT
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function setAmount(amount) {
+            const amountInput = document.querySelector('input[name*="amount"]');
+            if (amountInput) {
+                amountInput.value = amount.toFixed(2);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-calculer le montant en fonction du type de paiement
+            const typeSelect = document.querySelector('select[name*="paymentType"]');
+            const amountInput = document.querySelector('input[name*="amount"]');
+
+            if (typeSelect && amountInput) {
+                typeSelect.addEventListener('change', function() {
+                    switch(this.value) {
+                        case 'REGISTRATION':
+                            amountInput.value = '{{ enrollment.registrationFees|number_format(2, ".", "") }}';
+                            break;
+                        case 'FORMATION':
+                            const remaining = {{ enrollment.remainingAmount|number_format(2, '.', '') }};
+                            amountInput.value = remaining.toFixed(2);
+                            break;
+                        case 'FULL':
+                            const total = {{ enrollment.remainingAmount|number_format(2, '.', '') }};
+                            amountInput.value = total.toFixed(2);
+                            break;
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

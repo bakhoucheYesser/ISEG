@@ -42,7 +42,7 @@ class PaymentType extends AbstractType
                     new Assert\NotNull(message: 'La date est obligatoire')
                 ]
             ])
-            ->add('paymentTime', TimeType::class, [
+            ->add('paymentDate', TimeType::class, [
                 'label' => 'Heure de paiement',
                 'data' => new \DateTime(),
                 'widget' => 'single_text',
@@ -74,15 +74,7 @@ class PaymentType extends AbstractType
                     'placeholder' => 'Description du paiement...'
                 ]
             ])
-            ->add('notes', TextareaType::class, [
-                'label' => 'Notes internes',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-textarea',
-                    'rows' => 2,
-                    'placeholder' => 'Notes pour l\'équipe...'
-                ]
-            ]);
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
