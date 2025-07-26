@@ -1,14 +1,14 @@
 <?php
-
 namespace App\Form;
 
 use App\Entity\Payment;
+use App\Enum\PaymentType as PaymentTypeEnum; // Renommage pour éviter le conflit
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,11 +19,10 @@ class PaymentType extends AbstractType
     {
         $builder
             ->add('amount', MoneyType::class, [
-                'label' => 'Montant (DT)',
+                'label' => 'Montant',
                 'currency' => 'TND',
                 'attr' => [
-                    'class' => 'form-input',
-                    'placeholder' => '0.00',
+                    'class' => 'form-control',
                     'step' => '0.01'
                 ],
                 'constraints' => [
@@ -31,32 +30,23 @@ class PaymentType extends AbstractType
                     new Assert\Positive(message: 'Le montant doit être positif')
                 ]
             ])
-            ->add('paymentDate', DateType::class, [
+            ->add('paymentDate', DateTimeType::class, [
                 'label' => 'Date de paiement',
-                'data' => new \DateTime(),
                 'widget' => 'single_text',
                 'attr' => [
-                    'class' => 'form-input'
+                    'class' => 'form-control'
                 ],
                 'constraints' => [
-                    new Assert\NotNull(message: 'La date est obligatoire')
-                ]
-            ])
-            ->add('paymentDate', TimeType::class, [
-                'label' => 'Heure de paiement',
-                'data' => new \DateTime(),
-                'widget' => 'single_text',
-                'attr' => [
-                    'class' => 'form-input'
+                    new Assert\NotBlank(message: 'La date de paiement est obligatoire')
                 ]
             ])
             ->add('paymentType', ChoiceType::class, [
                 'label' => 'Type de paiement',
                 'choices' => [
-                    'Frais d\'inscription' => Payment::TYPE_REGISTRATION,
-                    'Frais de formation' => Payment::TYPE_FORMATION,
-                    'Paiement partiel' => Payment::TYPE_PARTIAL,
-                    'Paiement complet' => Payment::TYPE_FULL
+                    'Frais d\'inscription' => PaymentTypeEnum::REGISTRATION,
+                    'Frais de formation' => PaymentTypeEnum::FORMATION,
+                    'Paiement partiel' => PaymentTypeEnum::PARTIAL,
+                    'Paiement complet' => PaymentTypeEnum::FULL,
                 ],
                 'attr' => [
                     'class' => 'form-select'
@@ -65,16 +55,39 @@ class PaymentType extends AbstractType
                     new Assert\NotBlank(message: 'Le type de paiement est obligatoire')
                 ]
             ])
+            ->add('paymentMethod', ChoiceType::class, [
+                'label' => 'Méthode de paiement',
+                'choices' => [
+                    'Espèces' => 'CASH',
+                    'Chèque' => 'CHECK',
+                    'Virement bancaire' => 'BANK_TRANSFER',
+                    'Carte de crédit' => 'CREDIT_CARD',
+                    'Paiement en ligne' => 'ONLINE',
+                ],
+                'attr' => [
+                    'class' => 'form-select'
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(message: 'La méthode de paiement est obligatoire')
+                ]
+            ])
+            ->add('reference', TextType::class, [
+                'label' => 'Référence',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Référence du paiement (optionnel)'
+                ]
+            ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-textarea',
+                    'class' => 'form-control',
                     'rows' => 3,
-                    'placeholder' => 'Description du paiement...'
+                    'placeholder' => 'Description ou notes sur le paiement'
                 ]
-            ])
-            ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -84,3 +97,4 @@ class PaymentType extends AbstractType
         ]);
     }
 }
+

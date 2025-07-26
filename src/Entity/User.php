@@ -85,38 +85,128 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updatedAt = new \DateTime();
     }
 
-    public function getId(): ?int { return $this->id; }
-    public function getLogin(): ?string { return $this->login; }
-    public function setLogin(string $login): static { $this->login = $login; return $this; }
-    public function getPassword(): ?string { return $this->password; }
-    public function setPassword(string $password): static { $this->password = $password; return $this; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getRole(): ?UserRole { return $this->role; }
-    public function setRole(UserRole $role): static { $this->role = $role; return $this; }
+    public function getLogin(): ?string
+    {
+        return $this->login;
+    }
 
-    public function getFullName(): ?string { return $this->fullName; }
-    public function setFullName(string $fullName): static { $this->fullName = $fullName; return $this; }
+    public function setLogin(string $login): static
+    {
+        $this->login = $login;
+        return $this;
+    }
 
-    public function getAllowedIpAddress(): ?string { return $this->allowedIpAddress; }
-    public function setAllowedIpAddress(?string $allowedIpAddress): static { $this->allowedIpAddress = $allowedIpAddress; return $this; }
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
 
-    public function isActive(): bool { return $this->isActive; }
-    public function setIsActive(bool $isActive): static { $this->isActive = $isActive; return $this; }
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+        return $this;
+    }
 
-    public function getLastLoginAt(): ?\DateTimeInterface { return $this->lastLoginAt; }
-    public function setLastLoginAt(?\DateTimeInterface $lastLoginAt): static { $this->lastLoginAt = $lastLoginAt; return $this; }
+    public function getRole(): ?UserRole
+    {
+        return $this->role;
+    }
 
-    public function getLastActivityAt(): ?\DateTimeInterface { return $this->lastActivityAt; }
-    public function setLastActivityAt(?\DateTimeInterface $lastActivityAt): static { $this->lastActivityAt = $lastActivityAt; return $this; }
+    public function setRole(UserRole $role): static
+    {
+        $this->role = $role;
+        return $this;
+    }
 
-    public function getCreatedAt(): ?\DateTimeInterface { return $this->createdAt; }
-    public function setCreatedAt(\DateTimeInterface $createdAt): static { $this->createdAt = $createdAt; return $this; }
+    public function getFullName(): ?string
+    {
+        return $this->fullName;
+    }
 
-    public function getUpdatedAt(): ?\DateTimeInterface { return $this->updatedAt; }
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): static { $this->updatedAt = $updatedAt; return $this; }
+    public function setFullName(string $fullName): static
+    {
+        $this->fullName = $fullName;
+        return $this;
+    }
 
-    public function getEnrollments(): Collection { return $this->enrollments; }
-    public function addEnrollment(Enrollment $enrollment): static {
+    public function getAllowedIpAddress(): ?string
+    {
+        return $this->allowedIpAddress;
+    }
+
+    public function setAllowedIpAddress(?string $allowedIpAddress): static
+    {
+        $this->allowedIpAddress = $allowedIpAddress;
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
+        return $this;
+    }
+
+    public function getLastLoginAt(): ?\DateTimeInterface
+    {
+        return $this->lastLoginAt;
+    }
+
+    public function setLastLoginAt(?\DateTimeInterface $lastLoginAt): static
+    {
+        $this->lastLoginAt = $lastLoginAt;
+        return $this;
+    }
+
+    public function getLastActivityAt(): ?\DateTimeInterface
+    {
+        return $this->lastActivityAt;
+    }
+
+    public function setLastActivityAt(?\DateTimeInterface $lastActivityAt): static
+    {
+        $this->lastActivityAt = $lastActivityAt;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    public function getEnrollments(): Collection
+    {
+        return $this->enrollments;
+    }
+
+    public function addEnrollment(Enrollment $enrollment): static
+    {
         if (!$this->enrollments->contains($enrollment)) {
             $this->enrollments->add($enrollment);
             $enrollment->setCreatedBy($this);
@@ -124,7 +214,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeEnrollment(Enrollment $enrollment): static {
+    public function removeEnrollment(Enrollment $enrollment): static
+    {
         if ($this->enrollments->removeElement($enrollment)) {
             if ($enrollment->getCreatedBy() === $this) {
                 $enrollment->setCreatedBy(null);
@@ -133,8 +224,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPayments(): Collection { return $this->payments; }
-    public function addPayment(Payment $payment): static {
+    public function getPayments(): Collection
+    {
+        return $this->payments;
+    }
+
+    public function addPayment(Payment $payment): static
+    {
         if (!$this->payments->contains($payment)) {
             $this->payments->add($payment);
             $payment->setCreatedBy($this);
@@ -142,7 +238,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removePayment(Payment $payment): static {
+    public function removePayment(Payment $payment): static
+    {
         if ($this->payments->removeElement($payment)) {
             if ($payment->getCreatedBy() === $this) {
                 $payment->setCreatedBy(null);
@@ -151,8 +248,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSessions(): Collection { return $this->sessions; }
-    public function addSession(UserSession $session): static {
+    public function getSessions(): Collection
+    {
+        return $this->sessions;
+    }
+
+    public function addSession(UserSession $session): static
+    {
         if (!$this->sessions->contains($session)) {
             $this->sessions->add($session);
             $session->setUser($this);
@@ -160,7 +262,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeSession(UserSession $session): static {
+    public function removeSession(UserSession $session): static
+    {
         if ($this->sessions->removeElement($session)) {
             if ($session->getUser() === $this) {
                 $session->setUser(null);
@@ -169,14 +272,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUserIdentifier(): string { return (string) $this->login; }
+    public function getUserIdentifier(): string
+    {
+        return (string)$this->login;
+    }
 
     public function getRoles(): array
     {
         return ['ROLE_' . $this->role->value];
     }
 
-    public function eraseCredentials(): void {}
+    public function eraseCredentials(): void
+    {
+    }
 
     public function updateLastActivity(): void
     {
@@ -239,13 +347,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getTotalAmountProcessedThisMonth(): float
     {
         $thisMonth = new \DateTime('first day of this month');
-        return array_reduce($this->payments->toArray(), fn($carry, $p) =>
-        $p->getCreatedAt() >= $thisMonth ? $carry + $p->getAmount() : $carry, 0.0);
+        return array_reduce($this->payments->toArray(), fn($carry, $p) => $p->getCreatedAt() >= $thisMonth ? $carry + $p->getAmount() : $carry, 0.0);
     }
 
     public function getFormattedRole(): string
     {
-        return match($this->role) {
+        return match ($this->role) {
             UserRole::ADMIN => 'Administrateur',
             UserRole::AGENT => 'Agent de paiement',
             default => 'Utilisateur'

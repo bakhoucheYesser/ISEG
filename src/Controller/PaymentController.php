@@ -7,6 +7,7 @@ use App\Entity\Enrollment;
 use App\Service\PaymentService;
 use App\Service\ReceiptService;
 use App\Form\PaymentType;
+use App\Form\PaymentType as PaymentFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,8 @@ class PaymentController extends AbstractController
         private PaymentService $paymentService,
         private ReceiptService $receiptService
     ) {}
+
+
 
     #[Route('/', name: 'payment_index')]
     public function index(Request $request): Response
@@ -104,18 +107,21 @@ class PaymentController extends AbstractController
     #[Route('/enrollment/{id}/new', name: 'payment_new', requirements: ['id' => '\d+'])]
     public function new(Request $request, Enrollment $enrollment): Response
     {
+
         $payment = new Payment();
         $payment->setEnrollment($enrollment);
+        $payment->setCreatedBy($this->getUser());
 
-        $form = $this->createForm(PaymentType::class, $payment);
+        $form = $this->createForm(PaymentFormType::class, $payment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                // CORRECTION: Pas besoin de conversion, le formulaire retourne déjà un PaymentType
                 $payment = $this->paymentService->processPayment(
                     $enrollment,
                     (float) $payment->getAmount(),
-                    $payment->getPaymentType(),
+                    $payment->getPaymentType(), // C'est déjà un PaymentType grâce au formulaire
                     null,
                     $payment->getDescription()
                 );

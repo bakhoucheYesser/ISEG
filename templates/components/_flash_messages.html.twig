@@ -1,74 +1,94 @@
 {# templates/components/_flash_messages.html.twig #}
-{% for type, messages in app.flashes %}
-    {% for message in messages %}
-        <div class="flash-message fixed top-20 right-4 z-50 transform transition-all duration-300 translate-x-0 opacity-100">
-            <div class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden">
-                <div class="p-4">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            {% if type == 'success' %}
-                                <div class="bg-green-100 rounded-full p-1">
-                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
+{% if app.flashes|length > 0 %}
+    <div class="flash-messages-container mb-6">
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash-message mb-3 animate-fade-in" data-type="{{ type }}">
+                    <div class="bg-white rounded-lg border-l-4 {% if type == 'success' %}border-green-500{% elseif type == 'error' or type == 'danger' %}border-red-500{% elseif type == 'warning' %}border-yellow-500{% else %}border-blue-500{% endif %} shadow-md overflow-hidden">
+                        <div class="p-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    {% if type == 'success' %}
+                                        <div class="bg-green-100 rounded-full p-2">
+                                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                    {% elseif type == 'error' or type == 'danger' %}
+                                        <div class="bg-red-100 rounded-full p-2">
+                                            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </div>
+                                    {% elseif type == 'warning' %}
+                                        <div class="bg-yellow-100 rounded-full p-2">
+                                            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                            </svg>
+                                        </div>
+                                    {% else %}
+                                        <div class="bg-blue-100 rounded-full p-2">
+                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                        </div>
+                                    {% endif %}
                                 </div>
-                            {% elseif type == 'error' or type == 'danger' %}
-                                <div class="bg-red-100 rounded-full p-1">
-                                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
+                                <div class="ml-4 flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-sm font-semibold {% if type == 'success' %}text-green-800{% elseif type == 'error' or type == 'danger' %}text-red-800{% elseif type == 'warning' %}text-yellow-800{% else %}text-blue-800{% endif %}">
+                                            {% if type == 'success' %}
+                                                <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Succès
+                                            {% elseif type == 'error' or type == 'danger' %}
+                                                <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Erreur
+                                            {% elseif type == 'warning' %}
+                                                <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Attention
+                                            {% else %}
+                                                <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Information
+                                            {% endif %}
+                                        </h3>
+                                        <button type="button"
+                                                onclick="this.closest('.flash-message').remove()"
+                                                class="flex-shrink-0 ml-4 bg-white rounded-md inline-flex text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 {% if type == 'success' %}focus:ring-green-500{% elseif type == 'error' or type == 'danger' %}focus:ring-red-500{% elseif type == 'warning' %}focus:ring-yellow-500{% else %}focus:ring-blue-500{% endif %} transition-colors duration-200">
+                                            <span class="sr-only">Fermer</span>
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <p class="mt-2 text-sm {% if type == 'success' %}text-green-700{% elseif type == 'error' or type == 'danger' %}text-red-700{% elseif type == 'warning' %}text-yellow-700{% else %}text-blue-700{% endif %} leading-relaxed">
+                                        {{ message|raw }}
+                                    </p>
                                 </div>
-                            {% elseif type == 'warning' %}
-                                <div class="bg-yellow-100 rounded-full p-1">
-                                    <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                    </svg>
-                                </div>
-                            {% else %}
-                                <div class="bg-iseg-blue-100 rounded-full p-1">
-                                    <svg class="w-5 h-5 text-iseg-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
-                            {% endif %}
+                            </div>
                         </div>
-                        <div class="ml-3 w-0 flex-1 pt-0.5">
-                            <p class="text-sm font-medium text-gray-900">
-                                {% if type == 'success' %}
-                                    Succès
-                                {% elseif type == 'error' or type == 'danger' %}
-                                    Erreur
-                                {% elseif type == 'warning' %}
-                                    Attention
-                                {% else %}
-                                    Information
-                                {% endif %}
-                            </p>
-                            <p class="mt-1 text-sm text-gray-500">{{ message|raw }}</p>
-                        </div>
-                        <div class="ml-4 flex-shrink-0 flex">
-                            <button onclick="this.closest('.flash-message').remove()"
-                                    class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                <span class="sr-only">Fermer</span>
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
+                        <!-- Barre de progression pour l'auto-disparition -->
+                        <div class="{% if type == 'success' %}bg-green-200{% elseif type == 'error' or type == 'danger' %}bg-red-200{% elseif type == 'warning' %}bg-yellow-200{% else %}bg-blue-200{% endif %} h-1">
+                            <div class="h-1 {% if type == 'success' %}bg-green-500{% elseif type == 'error' or type == 'danger' %}bg-red-500{% elseif type == 'warning' %}bg-yellow-500{% else %}bg-blue-500{% endif %} progress-bar"></div>
                         </div>
                     </div>
                 </div>
-                <!-- Barre de progression pour l'auto-disparition -->
-                <div class="bg-gray-200 h-1">
-                    <div class="h-1 {% if type == 'success' %}bg-green-500{% elseif type == 'error' or type == 'danger' %}bg-red-500{% elseif type == 'warning' %}bg-yellow-500{% else %}bg-iseg-blue-500{% endif %} progress-bar"></div>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
-{% endfor %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}
 
 <style>
     .progress-bar {
-        animation: progressBar 5s linear forwards;
+        animation: progressBar 6s linear forwards;
+        width: 100%;
     }
 
     @keyframes progressBar {
@@ -77,7 +97,97 @@
     }
 
     .flash-message.fade-out {
-        transform: translateX(100%);
         opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease-out;
+    }
+
+    /* Animation d'entrée */
+    .animate-fade-in {
+        animation: fadeInDown 0.4s ease-out;
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Hover effects */
+    .flash-message:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        transition: all 0.2s ease;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        .flash-message {
+            margin-left: -0.5rem;
+            margin-right: -0.5rem;
+        }
+
+        .flash-message .p-4 {
+            padding: 1rem;
+        }
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Initialisation des messages flash dans le contenu');
+
+        const flashMessages = document.querySelectorAll('.flash-message');
+        console.log('Messages trouvés:', flashMessages.length);
+
+        flashMessages.forEach(function(message, index) {
+            // Auto-suppression après 6 secondes avec décalage
+            setTimeout(function() {
+                if (message && message.parentNode) {
+                    console.log('Suppression automatique du message', index);
+                    message.classList.add('fade-out');
+                    setTimeout(function() {
+                        if (message && message.parentNode) {
+                            message.remove();
+                        }
+                    }, 300);
+                }
+            }, 6000 + (index * 500)); // 6s + 500ms de décalage par message
+
+            // Gestionnaire pour fermeture manuelle
+            const closeButton = message.querySelector('button');
+            if (closeButton) {
+                closeButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Fermeture manuelle du message', index);
+                    message.classList.add('fade-out');
+                    setTimeout(function() {
+                        if (message && message.parentNode) {
+                            message.remove();
+                        }
+                    }, 300);
+                });
+            }
+        });
+
+        // Clic pour fermer en cliquant sur le message (optionnel)
+        flashMessages.forEach(function(message) {
+            message.addEventListener('click', function(e) {
+                // Ne fermer que si on clique sur le message lui-même, pas sur le bouton
+                if (e.target === message || e.target.closest('.flash-message') === message && !e.target.closest('button')) {
+                    message.classList.add('fade-out');
+                    setTimeout(function() {
+                        if (message && message.parentNode) {
+                            message.remove();
+                        }
+                    }, 300);
+                }
+            });
+        });
+    });
+</script>

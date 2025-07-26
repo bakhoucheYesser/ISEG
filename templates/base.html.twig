@@ -10,197 +10,61 @@
 
     <!-- Tailwind CSS via PostCSS (Production ready) -->
     {% block stylesheets %}
-
     {% endblock %}
 
+    <!-- Custom CSS for ISEG branding -->
+    <style>
+        /* Ensure ISEG color classes work */
+        .text-iseg-gold-200 {
+            color: var(--iseg-gold-200);
+        }
+        .text-iseg-gold-300 {
+            color: var(--iseg-gold-300);
+        }
+        .bg-iseg-navy-900 {
+            background-color: var(--iseg-navy-900);
+        }
+        .bg-iseg-navy-800 {
+            background-color: var(--iseg-navy-800);
+        }
+        .bg-iseg-navy-700 {
+            background-color: var(--iseg-navy-700);
+        }
+        .hover\:text-iseg-gold-300:hover {
+            color: var(--iseg-gold-300);
+        }
+        .hover\:bg-iseg-navy-700:hover {
+            background-color: var(--iseg-navy-700);
+        }
+        .hover\:bg-iseg-navy-800:hover {
+            background-color: var(--iseg-navy-800);
+        }
+        .focus\:ring-iseg-gold-500:focus {
+            --tw-ring-color: var(--iseg-gold-500);
+        }
+    </style>
 </head>
 
 <body class="bg-gray-50 font-sans antialiased min-h-screen flex flex-col" data-turbo-suppress-warning>
 <!-- Loading Spinner -->
-<div id="loading-spinner" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-    <div class="text-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p class="text-blue-700 font-medium">Chargement...</p>
-    </div>
-</div>
+{#<div id="loading-spinner" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">#}
+{#    <div class="text-center">#}
+{#        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>#}
+{#        <p class="text-blue-700 font-medium">Chargement...</p>#}
+{#    </div>#}
+{#</div>#}
 
-<!-- Navigation principale -->
-<nav class="bg-blue-900 shadow-lg fixed top-0 left-0 right-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-            <!-- Logo et titre -->
-            <div class="flex items-center space-x-4">
-                <div class="flex-shrink-0 flex items-center">
-                    <!-- Logo ISEG -->
-                    <div class="bg-yellow-500 p-2 rounded-lg mr-3">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold text-white">ISEG</h1>
-                        <p class="text-xs text-yellow-200">Gestion Étudiants</p>
-                    </div>
-                </div>
-
-                <!-- Navigation principale (desktop) -->
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="{{ path('dashboard') }}" class="nav-link {{ app.request.get('_route') starts with 'dashboard' ? 'active' : '' }}">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2V7zm16 3h-6m-2 5h6m-6 4h6m-6-8h6"></path>
-                            </svg>
-                            <span class="nav-text">Tableau de bord</span>
-                        </a>
-
-                        <div class="relative group">
-                            <button class="nav-link group-hover:text-yellow-300 flex items-center">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                                </svg>
-                                <span class="nav-text">Étudiants</span>
-                                <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-                            <!-- Dropdown menu -->
-                            <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                                <div class="py-1">
-                                    <a href="{{ path('student_index') }}" class="dropdown-link">
-                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                        </svg>
-                                        <span class="nav-text">Liste des étudiants</span>
-                                    </a>
-                                    <a href="{{ path('student_new') }}" class="dropdown-link">
-                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                        </svg>
-                                        <span class="nav-text">Nouvel étudiant</span>
-                                    </a>
-                                    <a href="{{ path('student_search') }}" class="dropdown-link">
-                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                        </svg>
-                                        <span class="nav-text">Rechercher</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="relative group">
-                            <button class="nav-link group-hover:text-yellow-300 flex items-center">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                                <span class="nav-text">Paiements</span>
-                                <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-                            <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                                <div class="py-1">
-                                    <a href="{{ path('payment_index') }}" class="dropdown-link">
-                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                        </svg>
-                                        <span class="nav-text">Tous les paiements</span>
-                                    </a>
-                                    <a href="{{ path('payment_pending') }}" class="dropdown-link">
-                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        <span class="nav-text">En attente</span>
-                                    </a>
-                                    <a href="{{ path('receipt_index') }}" class="dropdown-link">
-                                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                        </svg>
-                                        <span class="nav-text">Reçus</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <a href="{{ path('statistics') }}" class="nav-link {{ app.request.get('_route') starts with 'statistics' ? 'active' : '' }}">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                            <span class="nav-text">Statistiques</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- User menu -->
-            <div class="flex items-center space-x-4">
-                <div class="relative group">
-                    <button class="flex items-center space-x-2 text-yellow-100 hover:text-white focus:outline-none">
-                        <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
-                                <span class="text-sm font-medium text-white">
-                                    {{ app.user ? app.user.initials : 'U' }}
-                                </span>
-                        </div>
-                        <span class="hidden md:block text-sm">{{ app.user ? app.user.fullName : 'Utilisateur' }}</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-
-                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <div class="py-1">
-                            <div class="px-4 py-2 border-b border-gray-100">
-                                <p class="text-sm font-medium text-gray-900">{{ app.user ? app.user.fullName : 'Utilisateur' }}</p>
-                                <p class="text-xs text-gray-500">{{ app.user ? app.user.formattedRole : 'Role' }}</p>
-                            </div>
-                            <a href="{{ path('app_logout') }}" class="dropdown-link text-red-600 hover:bg-red-50">
-                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                </svg>
-                                <span class="nav-text">Déconnexion</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</nav>
+<!-- Navigation principale avec la nouvelle navbar -->
+{{ include('components/_navbar.html.twig') }}
 
 <!-- Main content -->
 <div class="flex-grow">
-    <!-- Flash messages -->
-    {% for type, messages in app.flashes %}
-        <div class="flash-messages">
-            {% for message in messages %}
-                <div class="content-container pt-4">
-                    <div class="alert alert-{{ type }} mb-4 p-4 rounded-md
-                            {{ type == 'success' ? 'bg-green-50 text-green-800 border border-green-200' : '' }}
-                            {{ type == 'error' ? 'bg-red-50 text-red-800 border border-red-200' : '' }}
-                            {{ type == 'warning' ? 'bg-yellow-50 text-yellow-800 border border-yellow-200' : '' }}
-                            {{ type == 'info' ? 'bg-blue-50 text-blue-800 border border-blue-200' : '' }}
-                        ">
-                        <div class="flex items-center">
-                            {% if type == 'success' %}
-                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                            {% elseif type == 'error' %}
-                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                </svg>
-                            {% endif %}
-                            {{ message }}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endfor %}
-
     <!-- Main content with consistent spacing -->
     <main class="pt-20 pb-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="content-container">
+            <!-- Flash messages intégrés dans le contenu -->
+            {{ include('components/_flash_messages.html.twig') }}
+
             <div class="main-content">
                 {% block content %}{% endblock %}
             </div>
@@ -211,50 +75,303 @@
 <!-- Footer -->
 {{ include('components/_footer.html.twig') }}
 
-<!-- Scripts moved to head for better Turbo compatibility -->
+<!-- Scripts -->
 {% block javascripts %}
     {{ importmap('app') }}
 {% endblock %}
 
-<!-- Custom JavaScript for enhanced functionality -->
+<!-- Enhanced JavaScript for better UX -->
 <script>
-    // Loading spinner management
+    // Global ISEG utilities
+    window.ISEG = window.ISEG || {};
+
+    // Enhanced loading spinner management - VERSION CORRIGÉE
     document.addEventListener('DOMContentLoaded', function() {
         const spinner = document.getElementById('loading-spinner');
 
-        // Show spinner on form submissions
-        document.addEventListener('submit', function() {
-            if (spinner) spinner.classList.remove('hidden');
-        });
+        if (spinner) {
+            // Force hide spinner on page load
+            spinner.classList.add('hidden');
 
-        // Hide spinner when page loads
-        window.addEventListener('load', function() {
-            if (spinner) spinner.classList.add('hidden');
-        });
+            // Fonction pour cacher le spinner
+            function hideSpinner() {
+                if (spinner) {
+                    spinner.classList.add('hidden');
+                }
+            }
 
-        // Turbo integration
-        document.addEventListener('turbo:submit-start', function() {
-            if (spinner) spinner.classList.remove('hidden');
-        });
+            // Fonction pour montrer le spinner
+            function showSpinner() {
+                if (spinner) {
+                    spinner.classList.remove('hidden');
+                }
+            }
 
-        document.addEventListener('turbo:submit-end', function() {
-            if (spinner) spinner.classList.add('hidden');
-        });
+            // Show spinner on form submissions (except search forms)
+            document.addEventListener('submit', function(e) {
+                if (!e.target.classList.contains('no-spinner') &&
+                    !e.target.closest('.search-form') &&
+                    !e.target.classList.contains('flash-message')) {
+                    showSpinner();
+
+                    // Fallback: hide after 10 seconds max
+                    setTimeout(hideSpinner, 10000);
+                }
+            });
+
+            // Show spinner on navigation links (avec délai plus court)
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a[href]');
+                if (link &&
+                    !link.hasAttribute('data-no-spinner') &&
+                    !link.href.includes('#') &&
+                    !link.href.includes('javascript:') &&
+                    !link.classList.contains('dropdown-link') &&
+                    !link.closest('.flash-message')) {
+
+                    // Délai plus court pour les liens
+                    setTimeout(() => {
+                        showSpinner();
+                        // Fallback: hide after 5 seconds for links
+                        setTimeout(hideSpinner, 5000);
+                    }, 50);
+                }
+            });
+
+            // Hide spinner events (multiple fallbacks)
+            window.addEventListener('load', hideSpinner);
+            window.addEventListener('pageshow', hideSpinner);
+            document.addEventListener('DOMContentLoaded', hideSpinner);
+
+            // Turbo integration avec fallbacks
+            document.addEventListener('turbo:submit-start', () => {
+                showSpinner();
+                setTimeout(hideSpinner, 8000); // Fallback
+            });
+
+            document.addEventListener('turbo:submit-end', hideSpinner);
+            document.addEventListener('turbo:visit', () => {
+                showSpinner();
+                setTimeout(hideSpinner, 5000); // Fallback
+            });
+
+            document.addEventListener('turbo:load', hideSpinner);
+            document.addEventListener('turbo:render', hideSpinner);
+
+            // Force hide spinner after any AJAX or fetch
+            const originalFetch = window.fetch;
+            window.fetch = function(...args) {
+                return originalFetch.apply(this, args).finally(() => {
+                    setTimeout(hideSpinner, 100);
+                });
+            };
+
+            // Emergency fallback: hide spinner after 3 seconds on any user interaction
+            let emergencyTimer;
+            document.addEventListener('click', function() {
+                clearTimeout(emergencyTimer);
+                emergencyTimer = setTimeout(hideSpinner, 3000);
+            });
+
+            // Hide spinner when user presses Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    hideSpinner();
+                }
+            });
+
+            console.log('✅ Enhanced spinner management loaded with fallbacks');
+        }
     });
 
-    // Auto-hide flash messages
+    // Mobile menu functionality
     document.addEventListener('DOMContentLoaded', function() {
-        const flashMessages = document.querySelectorAll('.flash-messages .alert');
-        flashMessages.forEach(function(message) {
-            setTimeout(function() {
-                message.style.transition = 'opacity 0.3s ease-out';
-                message.style.opacity = '0';
-                setTimeout(function() {
-                    message.remove();
-                }, 300);
-            }, 5000);
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+
+                // Update button icon
+                const icon = this.querySelector('svg path');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+                } else {
+                    icon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+                }
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    mobileMenu.classList.add('hidden');
+                    const icon = mobileMenuButton.querySelector('svg path');
+                    icon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+                }
+            });
+        }
+    });
+
+    // Confirmation for logout and destructive actions
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a[data-confirm]');
+        if (link) {
+            const message = link.getAttribute('data-confirm');
+            if (!confirm(message)) {
+                e.preventDefault();
+                return false;
+            }
+        }
+    });
+
+    // Enhanced form validation with ISEG styling
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation
+        const forms = document.querySelectorAll('form[data-validate]');
+        forms.forEach(form => {
+            const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+                inputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        showFieldError(input, 'Ce champ est obligatoire');
+                    } else {
+                        clearFieldError(input);
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    window.ISEG.toast('Veuillez corriger les erreurs dans le formulaire', 'error');
+                }
+            });
         });
     });
+
+    function showFieldError(field, message) {
+        clearFieldError(field);
+        field.classList.add('border-red-500');
+        field.classList.remove('border-gray-300');
+
+        const error = document.createElement('div');
+        error.className = 'field-error text-red-600 text-sm mt-1';
+        error.textContent = message;
+        field.parentNode.appendChild(error);
+    }
+
+    function clearFieldError(field) {
+        field.classList.remove('border-red-500');
+        field.classList.add('border-gray-300');
+
+        const existingError = field.parentNode.querySelector('.field-error');
+        if (existingError) {
+            existingError.remove();
+        }
+    }
+
+    // Utility functions
+    Object.assign(window.ISEG, {
+        // Format currency in Tunisian Dinar
+        formatCurrency: function(amount) {
+            return new Intl.NumberFormat('fr-TN', {
+                style: 'currency',
+                currency: 'TND',
+                minimumFractionDigits: 0
+            }).format(amount);
+        },
+
+        // Format date in French
+        formatDate: function(date) {
+            return new Intl.DateTimeFormat('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }).format(new Date(date));
+        },
+
+        // Show toast notification
+        toast: function(message, type = 'info', duration = 5000) {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-24 right-4 z-50 max-w-sm bg-white rounded-lg shadow-lg border-l-4 p-4 animate-fade-in ${
+                type === 'success' ? 'border-green-500' :
+                    type === 'error' ? 'border-red-500' :
+                        type === 'warning' ? 'border-yellow-500' : 'border-blue-500'
+            }`;
+
+            toast.innerHTML = `
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="rounded-full p-1 ${
+                type === 'success' ? 'bg-green-100' :
+                    type === 'error' ? 'bg-red-100' :
+                        type === 'warning' ? 'bg-yellow-100' : 'bg-blue-100'
+            }">
+                                <svg class="w-4 h-4 ${
+                type === 'success' ? 'text-green-600' :
+                    type === 'error' ? 'text-red-600' :
+                        type === 'warning' ? 'text-yellow-600' : 'text-blue-600'
+            }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    ${type === 'success' ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>' :
+                type === 'error' ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>' :
+                    type === 'warning' ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>' :
+                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'}
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-3 flex-1">
+                            <p class="text-sm font-medium text-gray-900">${message}</p>
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-gray-400 hover:text-gray-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+
+            document.body.appendChild(toast);
+
+            // Auto remove
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, duration);
+
+            return toast;
+        },
+
+        // Confirm with better styling
+        confirm: function(message, title = 'Confirmation') {
+            return confirm(`${title}\n\n${message}`);
+        }
+    });
+
+    // Global error handling
+    window.addEventListener('error', function(e) {
+        console.error('Application error:', e.error);
+        if (window.ISEG && window.ISEG.toast) {
+            window.ISEG.toast('Une erreur inattendue s\'est produite', 'error');
+        }
+    });
+
+    // Performance monitoring (dev only)
+    {% if app.environment == 'dev' %}
+    if ('performance' in window) {
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const timing = performance.timing;
+                const loadTime = timing.loadEventEnd - timing.navigationStart;
+                console.log(`%c⚡ Page loaded in ${loadTime}ms`, 'color: #10b981; font-weight: bold');
+            }, 100);
+        });
+    }
+    {% endif %}
 </script>
 </body>
 </html>

@@ -140,6 +140,10 @@
       <path value="$PROJECT_DIR$/vendor/symfony/ux-turbo" />
       <path value="$PROJECT_DIR$/vendor/symfonycasts/tailwind-bundle" />
       <path value="$PROJECT_DIR$/vendor/symfony/asset-mapper" />
+      <path value="$PROJECT_DIR$/vendor/dompdf/php-svg-lib" />
+      <path value="$PROJECT_DIR$/vendor/dompdf/php-font-lib" />
+      <path value="$PROJECT_DIR$/vendor/sabberworm/php-css-parser" />
+      <path value="$PROJECT_DIR$/vendor/dompdf/dompdf" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">

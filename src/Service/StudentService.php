@@ -7,14 +7,18 @@ use App\Entity\Enrollment;
 use App\Entity\Formation;
 use App\Entity\ClassRoom;
 use App\Entity\PaymentMode;
+use App\Enum\PaymentStatus;
+use App\Enum\RegistrationStatus;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
 class StudentService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private Security $security
+        private Security $security,
+        private LoggerInterface $logger
     ) {}
 
     public function registerStudent(
@@ -24,39 +28,100 @@ class StudentService
         PaymentMode $paymentMode,
         string $academicYear
     ): Enrollment {
+
+        $this->logger->info('Starting student registration', [
+            'student_id' => $student->getId(),
+            'formation_id' => $formation->getId(),
+            'classroom_id' => $classRoom->getId(),
+            'payment_mode_id' => $paymentMode->getId(),
+            'academic_year' => $academicYear
+        ]);
+
         $user = $this->security->getUser();
+        if (!$user) {
+            throw new \Exception('Utilisateur non authentifié');
+        }
+
+        // Vérifier si l'étudiant n'est pas déjà inscrit à cette formation pour cette année
+        $existingEnrollment = $this->entityManager->getRepository(Enrollment::class)
+            ->findOneBy([
+                'student' => $student,
+                'formation' => $formation,
+                'academicYear' => $academicYear,
+                'isActive' => true
+            ]);
+
+        if ($existingEnrollment) {
+            throw new \Exception('L\'étudiant est déjà inscrit à cette formation pour cette année académique');
+        }
 
         // Vérifier si la classe a de la place
         if ($classRoom->isFull()) {
             throw new \Exception('La classe est complète');
         }
 
-        $enrollment = new Enrollment();
-        $enrollment->setStudent($student);
-        $enrollment->setFormation($formation);
-        $enrollment->setClassRoom($classRoom);
-        $enrollment->setPaymentMode($paymentMode);
-        $enrollment->setAcademicYear($academicYear);
-        $enrollment->setCreatedBy($user);
+        // Commencer une transaction
+        $this->entityManager->beginTransaction();
 
-        // Calculer les montants
-        $registrationFees = (float) $formation->getRegistrationFees();
-        $formationFees = (float) $formation->getTotalPrice();
-        $totalAmount = $registrationFees + $formationFees;
+        try {
+            $enrollment = new Enrollment();
+            $enrollment->setStudent($student);
+            $enrollment->setFormation($formation);
+            $enrollment->setClassRoom($classRoom);
+            $enrollment->setPaymentMode($paymentMode);
+            $enrollment->setAcademicYear($academicYear);
+            $enrollment->setCreatedBy($user);
 
-        $enrollment->setRegistrationFees((string) $registrationFees);
-        $enrollment->setFormationFees((string) $formationFees);
-        $enrollment->setTotalAmount((string) $totalAmount);
-        $enrollment->setRemainingAmount((string) $totalAmount);
+            // Définir les statuts par défaut
+            $enrollment->setRegistrationStatus(RegistrationStatus::PENDING);
+            $enrollment->setPaymentStatus(PaymentStatus::NOT_PAID);
 
-        // Ajouter l'étudiant à la classe
-        $classRoom->addStudent();
+            // Calculer les montants
+            $registrationFees = (float) $formation->getRegistrationFees();
+            $formationFees = (float) $formation->getTotalPrice();
+            $totalAmount = $registrationFees + $formationFees;
 
-        $this->entityManager->persist($student);
-        $this->entityManager->persist($enrollment);
-        $this->entityManager->flush();
+            $this->logger->info('Calculated amounts', [
+                'registration_fees' => $registrationFees,
+                'formation_fees' => $formationFees,
+                'total_amount' => $totalAmount
+            ]);
 
-        return $enrollment;
+            $enrollment->setRegistrationFees((string) $registrationFees);
+            $enrollment->setFormationFees((string) $formationFees);
+            $enrollment->setTotalAmount((string) $totalAmount);
+            $enrollment->setRemainingAmount((string) $totalAmount);
+
+            // Mettre à jour le statut de paiement
+            $enrollment->updatePaymentStatus();
+
+            // Ajouter l'étudiant à la classe
+            $classRoom->addStudent();
+
+            // Persister les entités
+            $this->entityManager->persist($enrollment);
+            $this->entityManager->flush();
+
+            // Confirmer la transaction
+            $this->entityManager->commit();
+
+            $this->logger->info('Student registration completed successfully', [
+                'enrollment_id' => $enrollment->getId()
+            ]);
+
+            return $enrollment;
+
+        } catch (\Exception $e) {
+            // Annuler la transaction en cas d'erreur
+            $this->entityManager->rollback();
+
+            $this->logger->error('Student registration failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            throw $e;
+        }
     }
 
     public function searchStudents(string $query): array

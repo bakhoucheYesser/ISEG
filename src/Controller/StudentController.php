@@ -11,6 +11,7 @@ use App\Service\StudentService;
 use App\Form\StudentType;
 use App\Form\EnrollmentType;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +24,8 @@ class StudentController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private StudentService $studentService
+        private StudentService $studentService,
+        private LoggerInterface $logger
     ) {}
 
     #[Route('/', name: 'student_index')]
@@ -159,14 +161,66 @@ class StudentController extends AbstractController
     #[Route('/{id}/enroll', name: 'student_enroll', requirements: ['id' => '\d+'])]
     public function enroll(Request $request, Student $student): Response
     {
+        // Debug: Vérifier que l'étudiant existe
+        $this->logger->info('Starting enrollment for student', [
+            'student_id' => $student->getId(),
+            'student_name' => $student->getFullName()
+        ]);
+
         $enrollment = new Enrollment();
         $enrollment->setStudent($student);
+        $enrollment->setCreatedBy($this->getUser());
+
 
         $form = $this->createForm(EnrollmentType::class, $enrollment);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
+            $this->logger->info('Form submitted', [
+                'is_valid' => $form->isValid(),
+                'errors' => $form->getErrors(true, false)
+            ]);
+
+            // Debug: Afficher les erreurs de validation
+            if (!$form->isValid()) {
+                foreach ($form->getErrors(true) as $error) {
+                    $this->logger->error('Form validation error', [
+                        'message' => $error->getMessage(),
+                        'cause' => $error->getCause()
+                    ]);
+                    $this->addFlash('error', 'Erreur de validation: ' . $error->getMessage());
+                }
+
+                return $this->render('student/enroll.html.twig', [
+                    'student' => $student,
+                    'enrollment' => $enrollment,
+                    'form' => $form,
+                ]);
+            }
+
             try {
+                // Debug: Vérifier les données du formulaire avant l'enregistrement
+                $this->logger->info('Form data before service call', [
+                    'formation_id' => $enrollment->getFormation()?->getId(),
+                    'classroom_id' => $enrollment->getClassRoom()?->getId(),
+                    'payment_mode_id' => $enrollment->getPaymentMode()?->getId(),
+                    'academic_year' => $enrollment->getAcademicYear()
+                ]);
+
+                // Vérifier que toutes les entités nécessaires sont présentes
+                if (!$enrollment->getFormation()) {
+                    throw new \Exception('Formation non sélectionnée');
+                }
+                if (!$enrollment->getClassRoom()) {
+                    throw new \Exception('Classe non sélectionnée');
+                }
+                if (!$enrollment->getPaymentMode()) {
+                    throw new \Exception('Mode de paiement non sélectionné');
+                }
+                if (!$enrollment->getAcademicYear()) {
+                    throw new \Exception('Année académique non définie');
+                }
+
                 $enrollment = $this->studentService->registerStudent(
                     $student,
                     $enrollment->getFormation(),
@@ -175,10 +229,18 @@ class StudentController extends AbstractController
                     $enrollment->getAcademicYear()
                 );
 
+                $this->logger->info('Student enrolled successfully', [
+                    'enrollment_id' => $enrollment->getId()
+                ]);
+
                 $this->addFlash('success', 'Étudiant inscrit avec succès !');
                 return $this->redirectToRoute('student_show', ['id' => $student->getId()]);
 
             } catch (\Exception $e) {
+                $this->logger->error('Enrollment error', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
                 $this->addFlash('error', 'Erreur lors de l\'inscription : ' . $e->getMessage());
             }
         }

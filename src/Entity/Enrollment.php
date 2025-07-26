@@ -16,19 +16,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class Enrollment
 {
-
-    public const REGISTRATION_PENDING = 'PENDING';
-    public const REGISTRATION_CONFIRMED = 'CONFIRMED';
-    public const REGISTRATION_CANCELLED = 'CANCELLED';
-    public const REGISTRATION_REJECTED = 'REJECTED';
-
-    public const PAYMENT_NOT_PAID = 'NOT_PAID';
-    public const PAYMENT_PARTIAL = 'PARTIAL';
-    public const PAYMENT_FULLY_PAID = 'FULLY_PAID';
-    public const PAYMENT_REFUNDED = 'REFUNDED';
-    public const PAYMENT_CANCELLED = 'CANCELLED';
-
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -36,50 +23,51 @@ class Enrollment
 
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    #[Assert\NotNull]
+    #[Assert\NotNull(message: 'L\'étudiant est obligatoire')]
     private ?Student $student = null;
 
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
+    #[Assert\NotNull(message: 'La formation est obligatoire')]
     private ?Formation $formation = null;
 
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
+    #[Assert\NotNull(message: 'La classe est obligatoire')]
     private ?ClassRoom $classRoom = null;
 
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
+    #[Assert\NotNull(message: 'Le mode de paiement est obligatoire')]
     private ?PaymentMode $paymentMode = null;
 
     #[ORM\Column(length: 9)]
+    #[Assert\NotBlank(message: 'L\'année académique est obligatoire')]
     #[Assert\Regex(pattern: '/^\d{4}-\d{4}$/', message: 'Format: YYYY-YYYY')]
     private ?string $academicYear = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Assert\NotNull]
+    #[Assert\NotNull(message: 'La date d\'inscription est obligatoire')]
     private ?\DateTimeInterface $enrollmentDate = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Assert\Positive]
+    #[Assert\Positive(message: 'Le montant total doit être positif')]
     private ?string $totalAmount = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Assert\Positive]
+    #[Assert\Positive(message: 'Les frais d\'inscription doivent être positifs')]
     private ?string $registrationFees = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Assert\Positive]
+    #[Assert\Positive(message: 'Les frais de formation doivent être positifs')]
     private ?string $formationFees = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, options: ['default' => '0.00'])]
-    #[Assert\PositiveOrZero]
+    #[Assert\PositiveOrZero(message: 'Le montant payé doit être positif ou zéro')]
     private string $totalPaid = '0.00';
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Assert\PositiveOrZero]
+    #[Assert\PositiveOrZero(message: 'Le montant restant doit être positif ou zéro')]
     private ?string $remainingAmount = null;
 
     #[ORM\Column(enumType: RegistrationStatus::class, type: Types::STRING, options: ['default' => 'PENDING'])]
@@ -99,7 +87,7 @@ class Enrollment
 
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
+    #[Assert\NotNull(message: 'Le créateur est obligatoire')]
     private ?User $createdBy = null;
 
     #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'enrollment', cascade: ['remove'])]
@@ -115,6 +103,10 @@ class Enrollment
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
         $this->enrollmentDate = new \DateTime();
+
+        // Initialiser les statuts par défaut
+        $this->registrationStatus = RegistrationStatus::PENDING;
+        $this->paymentStatus = PaymentStatus::NOT_PAID;
     }
 
     #[ORM\PreUpdate]
@@ -123,9 +115,22 @@ class Enrollment
         $this->updatedAt = new \DateTime();
     }
 
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTime();
+        }
+        $this->updatedAt = new \DateTime();
+
+        if ($this->enrollmentDate === null) {
+            $this->enrollmentDate = new \DateTime();
+        }
+    }
+
     public function calculateRemainingAmount(): float
     {
-        return (float) $this->totalAmount - (float) $this->totalPaid;
+        return (float)$this->totalAmount - (float)$this->totalPaid;
     }
 
     public function isFullyPaid(): bool
@@ -137,75 +142,227 @@ class Enrollment
     {
         if ($this->isFullyPaid()) {
             $this->paymentStatus = PaymentStatus::FULLY_PAID;
-        } elseif ((float) $this->totalPaid > 0) {
+        } elseif ((float)$this->totalPaid > 0) {
             $this->paymentStatus = PaymentStatus::PARTIAL;
         } else {
             $this->paymentStatus = PaymentStatus::NOT_PAID;
         }
 
-        $this->remainingAmount = (string) $this->calculateRemainingAmount();
+        $this->remainingAmount = (string)$this->calculateRemainingAmount();
     }
 
-    public function getId(): ?int { return $this->id; }
-    public function setId(?int $id): void { $this->id = $id; }
+    // Getters et setters...
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getStudent(): ?Student { return $this->student; }
-    public function setStudent(?Student $student): void { $this->student = $student; }
+    public function getStudent(): ?Student
+    {
+        return $this->student;
+    }
 
-    public function getFormation(): ?Formation { return $this->formation; }
-    public function setFormation(?Formation $formation): void { $this->formation = $formation; }
+    public function setStudent(?Student $student): static
+    {
+        $this->student = $student;
+        return $this;
+    }
 
-    public function getClassRoom(): ?ClassRoom { return $this->classRoom; }
-    public function setClassRoom(?ClassRoom $classRoom): void { $this->classRoom = $classRoom; }
+    public function getFormation(): ?Formation
+    {
+        return $this->formation;
+    }
 
-    public function getPaymentMode(): ?PaymentMode { return $this->paymentMode; }
-    public function setPaymentMode(?PaymentMode $paymentMode): void { $this->paymentMode = $paymentMode; }
+    public function setFormation(?Formation $formation): static
+    {
+        $this->formation = $formation;
+        return $this;
+    }
 
-    public function getAcademicYear(): ?string { return $this->academicYear; }
-    public function setAcademicYear(?string $academicYear): void { $this->academicYear = $academicYear; }
+    public function getClassRoom(): ?ClassRoom
+    {
+        return $this->classRoom;
+    }
 
-    public function getEnrollmentDate(): ?\DateTimeInterface { return $this->enrollmentDate; }
-    public function setEnrollmentDate(?\DateTimeInterface $enrollmentDate): void { $this->enrollmentDate = $enrollmentDate; }
+    public function setClassRoom(?ClassRoom $classRoom): static
+    {
+        $this->classRoom = $classRoom;
+        return $this;
+    }
 
-    public function getTotalAmount(): ?string { return $this->totalAmount; }
-    public function setTotalAmount(?string $totalAmount): void { $this->totalAmount = $totalAmount; }
+    public function getPaymentMode(): ?PaymentMode
+    {
+        return $this->paymentMode;
+    }
 
-    public function getRegistrationFees(): ?string { return $this->registrationFees; }
-    public function setRegistrationFees(?string $registrationFees): void { $this->registrationFees = $registrationFees; }
+    public function setPaymentMode(?PaymentMode $paymentMode): static
+    {
+        $this->paymentMode = $paymentMode;
+        return $this;
+    }
 
-    public function getFormationFees(): ?string { return $this->formationFees; }
-    public function setFormationFees(?string $formationFees): void { $this->formationFees = $formationFees; }
+    public function getAcademicYear(): ?string
+    {
+        return $this->academicYear;
+    }
 
-    public function getTotalPaid(): string { return $this->totalPaid; }
-    public function setTotalPaid(string $totalPaid): void { $this->totalPaid = $totalPaid; }
+    public function setAcademicYear(?string $academicYear): static
+    {
+        $this->academicYear = $academicYear;
+        return $this;
+    }
 
-    public function getRemainingAmount(): ?string { return $this->remainingAmount; }
-    public function setRemainingAmount(?string $remainingAmount): void { $this->remainingAmount = $remainingAmount; }
+    public function getEnrollmentDate(): ?\DateTimeInterface
+    {
+        return $this->enrollmentDate;
+    }
 
-    public function getRegistrationStatus(): RegistrationStatus { return $this->registrationStatus; }
-    public function setRegistrationStatus(RegistrationStatus $registrationStatus): void { $this->registrationStatus = $registrationStatus; }
+    public function setEnrollmentDate(?\DateTimeInterface $enrollmentDate): static
+    {
+        $this->enrollmentDate = $enrollmentDate;
+        return $this;
+    }
 
-    public function getPaymentStatus(): PaymentStatus { return $this->paymentStatus; }
-    public function setPaymentStatus(PaymentStatus $paymentStatus): void { $this->paymentStatus = $paymentStatus; }
+    public function getTotalAmount(): ?string
+    {
+        return $this->totalAmount;
+    }
 
-    public function isActive(): bool { return $this->isActive; }
-    public function setIsActive(bool $isActive): void { $this->isActive = $isActive; }
+    public function setTotalAmount(?string $totalAmount): static
+    {
+        $this->totalAmount = $totalAmount;
+        return $this;
+    }
 
-    public function getCreatedAt(): ?\DateTimeInterface { return $this->createdAt; }
-    public function setCreatedAt(?\DateTimeInterface $createdAt): void { $this->createdAt = $createdAt; }
+    public function getRegistrationFees(): ?string
+    {
+        return $this->registrationFees;
+    }
 
-    public function getUpdatedAt(): ?\DateTimeInterface { return $this->updatedAt; }
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): void { $this->updatedAt = $updatedAt; }
+    public function setRegistrationFees(?string $registrationFees): static
+    {
+        $this->registrationFees = $registrationFees;
+        return $this;
+    }
+
+    public function getFormationFees(): ?string
+    {
+        return $this->formationFees;
+    }
+
+    public function setFormationFees(?string $formationFees): static
+    {
+        $this->formationFees = $formationFees;
+        return $this;
+    }
+
+    public function getTotalPaid(): string
+    {
+        return $this->totalPaid;
+    }
+
+    public function setTotalPaid(string $totalPaid): static
+    {
+        $this->totalPaid = $totalPaid;
+        return $this;
+    }
+
+    public function getRemainingAmount(): ?string
+    {
+        return $this->remainingAmount;
+    }
+
+    public function setRemainingAmount(?string $remainingAmount): static
+    {
+        $this->remainingAmount = $remainingAmount;
+        return $this;
+    }
+
+    public function getRegistrationStatus(): RegistrationStatus
+    {
+        return $this->registrationStatus;
+    }
+
+    public function setRegistrationStatus(RegistrationStatus $registrationStatus): static
+    {
+        $this->registrationStatus = $registrationStatus;
+        return $this;
+    }
+
+    public function getPaymentStatus(): PaymentStatus
+    {
+        return $this->paymentStatus;
+    }
+
+    public function setPaymentStatus(PaymentStatus $paymentStatus): static
+    {
+        $this->paymentStatus = $paymentStatus;
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
 
     public function getCreatedBy(): ?User
     {
         return $this->createdBy;
     }
-    public function setCreatedBy(?User $createdBy): void { $this->createdBy = $createdBy; }
 
-    public function getPayments(): Collection { return $this->payments; }
-    public function setPayments(Collection $payments): void { $this->payments = $payments; }
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+        return $this;
+    }
 
-    public function getPaymentInstallments(): Collection { return $this->paymentInstallments; }
-    public function setPaymentInstallments(Collection $paymentInstallments): void { $this->paymentInstallments = $paymentInstallments; }
+    public function getPayments(): Collection
+    {
+        return $this->payments;
+    }
+
+    public function setPayments(Collection $payments): static
+    {
+        $this->payments = $payments;
+        return $this;
+    }
+
+    public function getPaymentInstallments(): Collection
+    {
+        return $this->paymentInstallments;
+    }
+
+    public function setPaymentInstallments(Collection $paymentInstallments): static
+    {
+        $this->paymentInstallments = $paymentInstallments;
+        return $this;
+    }
 }

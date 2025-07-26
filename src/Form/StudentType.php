@@ -4,6 +4,7 @@
 namespace App\Form;
 
 use App\Entity\Student;
+use App\Enum\Gender;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -106,8 +107,8 @@ class StudentType extends AbstractType
                 'label' => 'Genre',
                 'required' => false,
                 'choices' => [
-                    'Masculin' => 'M',
-                    'Féminin' => 'F'
+                    'Masculin' => Gender::MALE,
+                    'Féminin' => Gender::FEMALE
                 ],
                 'attr' => [
                     'class' => 'form-select'

@@ -32,7 +32,7 @@ class Payment
     #[Assert\NotBlank]
     private ?\DateTimeInterface $paymentDate = null;
 
-    #[ORM\Column(enumType: PaymentType::class, type: Types::STRING)]
+    #[ORM\Column(type: Types::STRING, enumType: PaymentType::class)]
     #[Assert\NotBlank]
     private ?PaymentType $paymentType = null;
 
@@ -68,6 +68,10 @@ class Payment
 
     #[ORM\OneToOne(targetEntity: Receipt::class, mappedBy: 'payment', cascade: ['persist', 'remove'])]
     private ?Receipt $receipt = null;
+
+    #[ORM\ManyToOne(targetEntity: PaymentInstallment::class, inversedBy: 'payments')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?PaymentInstallment $installment = null;
 
     public function __construct()
     {
@@ -357,6 +361,14 @@ class Payment
         }
 
         $this->receipt = $receipt;
+        return $this;
+    }
+
+    public function getInstallment() : ?PaymentInstallment{
+        return $this->installment;
+    }
+    public function setInstallment(?PaymentInstallment $installment): static{
+        $this->installment = $installment;
         return $this;
     }
 
