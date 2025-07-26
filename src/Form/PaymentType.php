@@ -23,7 +23,8 @@ class PaymentType extends AbstractType
                 'currency' => 'TND',
                 'attr' => [
                     'class' => 'form-control',
-                    'step' => '0.01'
+                    'step' => '0.01',
+                    'min' => '0.01'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(message: 'Le montant est obligatoire'),
@@ -33,6 +34,7 @@ class PaymentType extends AbstractType
             ->add('paymentDate', DateTimeType::class, [
                 'label' => 'Date de paiement',
                 'widget' => 'single_text',
+                'data' => new \DateTime(), // Valeur par défaut : maintenant
                 'attr' => [
                     'class' => 'form-control'
                 ],
@@ -51,6 +53,7 @@ class PaymentType extends AbstractType
                 'attr' => [
                     'class' => 'form-select'
                 ],
+                'placeholder' => 'Sélectionnez le type de paiement',
                 'constraints' => [
                     new Assert\NotBlank(message: 'Le type de paiement est obligatoire')
                 ]
@@ -67,16 +70,10 @@ class PaymentType extends AbstractType
                 'attr' => [
                     'class' => 'form-select'
                 ],
+                'placeholder' => 'Sélectionnez la méthode de paiement',
+                'data' => 'CASH', // Valeur par défaut
                 'constraints' => [
                     new Assert\NotBlank(message: 'La méthode de paiement est obligatoire')
-                ]
-            ])
-            ->add('reference', TextType::class, [
-                'label' => 'Référence',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Référence du paiement (optionnel)'
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -97,4 +94,3 @@ class PaymentType extends AbstractType
         ]);
     }
 }
-

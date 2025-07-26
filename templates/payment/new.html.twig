@@ -78,15 +78,9 @@
                             </div>
 
                             <div>
-                                <label class="form-label">Méthode de paiement *</label>
-                                <select name="payment_method" class="form-select" required>
-                                    <option value="">Sélectionnez une méthode</option>
-                                    <option value="CASH">Espèces</option>
-                                    <option value="CHECK">Chèque</option>
-                                    <option value="BANK_TRANSFER">Virement bancaire</option>
-                                    <option value="CREDIT_CARD">Carte de crédit</option>
-                                    <option value="ONLINE">Paiement en ligne</option>
-                                </select>
+                                {{ form_label(form.paymentMethod, null, {'label_attr': {'class': 'form-label'}}) }} *
+                                {{ form_widget(form.paymentMethod, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.paymentMethod) }}
                             </div>
                         </div>
 

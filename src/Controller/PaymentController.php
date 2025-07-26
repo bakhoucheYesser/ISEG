@@ -7,13 +7,13 @@ use App\Entity\Enrollment;
 use App\Service\PaymentService;
 use App\Service\ReceiptService;
 use App\Form\PaymentType;
-use App\Form\PaymentType as PaymentFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Psr\Log\LoggerInterface;
 
 #[Route('/payments')]
 #[IsGranted('ROLE_USER')]
@@ -22,10 +22,9 @@ class PaymentController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private PaymentService $paymentService,
-        private ReceiptService $receiptService
+        private ReceiptService $receiptService,
+        private LoggerInterface $logger
     ) {}
-
-
 
     #[Route('/', name: 'payment_index')]
     public function index(Request $request): Response
@@ -107,30 +106,76 @@ class PaymentController extends AbstractController
     #[Route('/enrollment/{id}/new', name: 'payment_new', requirements: ['id' => '\d+'])]
     public function new(Request $request, Enrollment $enrollment): Response
     {
+        $this->logger->info('Starting new payment process', [
+            'enrollment_id' => $enrollment->getId(),
+            'student_name' => $enrollment->getStudent()->getFullName()
+        ]);
 
         $payment = new Payment();
         $payment->setEnrollment($enrollment);
         $payment->setCreatedBy($this->getUser());
 
-        $form = $this->createForm(PaymentFormType::class, $payment);
+        $form = $this->createForm(PaymentType::class, $payment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->logger->info('Payment form submitted and valid', [
+                'amount' => $payment->getAmount(),
+                'payment_type' => $payment->getPaymentType()?->value,
+                'payment_method' => $payment->getPaymentMethod()
+            ]);
+
             try {
-                // CORRECTION: Pas besoin de conversion, le formulaire retourne déjà un PaymentType
-                $payment = $this->paymentService->processPayment(
+                // Validation des données
+                if (!$payment->getAmount() || $payment->getAmount() <= 0) {
+                    throw new \InvalidArgumentException('Le montant doit être positif');
+                }
+
+                if (!$payment->getPaymentType()) {
+                    throw new \InvalidArgumentException('Le type de paiement est obligatoire');
+                }
+
+                if (!$payment->getPaymentMethod()) {
+                    throw new \InvalidArgumentException('La méthode de paiement est obligatoire');
+                }
+
+                // Définir la méthode de paiement si elle n'est pas définie
+                if (!$payment->getPaymentMethod()) {
+                    $payment->setPaymentMethod('CASH');
+                }
+
+                // Traitement du paiement via le service
+                $processedPayment = $this->paymentService->processPayment(
                     $enrollment,
                     (float) $payment->getAmount(),
-                    $payment->getPaymentType(), // C'est déjà un PaymentType grâce au formulaire
-                    null,
-                    $payment->getDescription()
+                    $payment->getPaymentType(),
+                    null, // installment
+                    $payment->getDescription(),
+                    $payment->getPaymentMethod()
                 );
 
+                $this->logger->info('Payment processed successfully', [
+                    'payment_id' => $processedPayment->getId(),
+                    'receipt_generated' => $processedPayment->getReceipt() !== null
+                ]);
+
                 $this->addFlash('success', 'Paiement enregistré avec succès ! Reçu généré.');
-                return $this->redirectToRoute('payment_show', ['id' => $payment->getId()]);
+                return $this->redirectToRoute('payment_show', ['id' => $processedPayment->getId()]);
 
             } catch (\Exception $e) {
+                $this->logger->error('Payment processing failed', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+
                 $this->addFlash('error', 'Erreur lors du paiement : ' . $e->getMessage());
+            }
+        } else {
+            // Log form errors if any
+            if ($form->isSubmitted() && !$form->isValid()) {
+                $this->logger->error('Payment form validation failed', [
+                    'errors' => (string) $form->getErrors(true, false)
+                ]);
             }
         }
 
